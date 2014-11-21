@@ -3,9 +3,17 @@ if exist('data.mat', 'file')
     load data.mat;
 else
     data = parse_data();
+	save('data.mat', 'data');
 end
 
 split_data(data);
+
+% visualize conv.dat
+% R = importdata('../data/conv.dat');
+% plot(R)
+% pause;
+% visualize_clean_data(data);
+
 end
 
 function data = parse_data()% load raw data files
@@ -22,7 +30,7 @@ h = waitbar(0, 'Parsing data');
 for i = 1 : length(pid)
     cur_data.pid = pid(i);
     if sum(R(:, 1) == pid(i)) ~= 96
-        fprintf('In complete stream %d will be discarded.\n', pid(i));
+        fprintf('Incomplete stream %d will be discarded.\n', pid(i));
         continue;
     end
     cur_data.sendgap = sendgap(R(:, 1) == pid(i));
@@ -66,8 +74,32 @@ testX = [sendgap, recvgap];
 % feature normalization
 features = normc([trainX; testX]);
 trainXN = features(1:size(trainX, 1), :);
-testXN = features(size(trainX, 1):end, :);
+testXN = features(size(trainX, 1)+1:end, :);
 
 save('data_numpy.mat', 'trainX', 'trainY', 'testX', 'testY', 'baseY', ...
     'trainXN', 'testXN');
+end
+
+function visualize_clean_data(data)
+%for i = 1:length(data)
+fprintf('%d\n', length(data));
+for i = 2:51
+	d = data(i);
+	h = figure(d.pid);
+	sendtime = cumsum(d.sendgap);
+	recvtime = cumsum(d.recvgap);
+	fprintf('total length: %d\n', length(d.sendgap) + length(d.recvgap));
+	idx = 1:length(sendtime);
+	%plot(idx, sendtime ./ idx', idx, recvtime ./ idx')
+	plot(idx, d.sendgap, idx, d.recvgap)
+	%plot(idx, d.recvgap);
+	set(gca, 'FontSize', 20);
+	xlabel('Packet index', 'FontSize', 20);
+	ylabel('Time', 'FontSize', 20);
+	title('Received gap', 'FontSize', 20);
+	h_legend = legend('Send time', 'Receive time');
+	set(h_legend, 'FontSize', 20);
+
+	pause;
+end
 end
