@@ -1,4 +1,4 @@
-from sklearn.linear_model import Lasso
+from sklearn.ensemble import RandomForestRegressor
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.io as sio
@@ -6,7 +6,7 @@ import sys
 import os
 
 
-def lasso(datapath):
+def random_forest_regressor(datapath):
 	# load mat
 	datafile = os.path.join(datapath, 'data_numpy.mat')
 	if os.path.exists(datafile) is False:
@@ -31,24 +31,11 @@ def lasso(datapath):
 	# plt.show()
 
 	# fit lasso should use non-normalized values
-	alpha = 1
-	lasso = Lasso(alpha = alpha, max_iter = 10000, tol = 0.5)
-	lasso.fit(train_x, train_y)
-	print(lasso)
-	# print lasso.coef_     # should plot coef_
-	# print lasso.score(test_x, test_y)
-	pred_y = lasso.predict(test_x)
-	# print test_y
-	# print pred_y
-
-	# plot results
-	max_id = 1000
-	x = list(xrange(len(test_y[1:max_id])))
-	h_truth = plt.plot(x, test_y[1:max_id], color = 'green',label='Ground truth')
-	h_pred  = plt.plot(x, pred_y[1:max_id], color = 'red', label='Lasso')
-	h_base  = plt.plot(x, base_y[1:max_id], color = 'blue', label='[1]')
-	#plt.legend(handles = [h_truth, h_pred, h_base])
-	plt.show()
+	params = {'n_estimators': 500,
+		   'max_depth': 4,
+		   'min_samples_split': 1}
+	rfr = RandomForestRegressor(**params)
+	print(rfr)
 
 
 if __name__ == '__main__':
@@ -56,4 +43,4 @@ if __name__ == '__main__':
 		print("Usage: lasso.py datapath")
 		exit()
 	else:
-		lasso(sys.argv[1])
+		random_forest_regressor(sys.argv[1])
