@@ -6,11 +6,14 @@ else
 	save('data.mat', 'data');
 end
 
-%split_data(data);
-R = importdata('../data/conv.dat');
-plot(R)
-pause;
-visualize_clean_data(data);
+split_data(data);
+
+% visualize conv.dat
+% R = importdata('../data/conv.dat');
+% plot(R)
+% pause;
+% visualize_clean_data(data);
+
 end
 
 function data = parse_data()% load raw data files
