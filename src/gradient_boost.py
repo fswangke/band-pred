@@ -40,6 +40,8 @@ def gradient_boost_regressor(datapath):
 	   'loss': 'ls'}
 	gbr = GradientBoostingRegressor(**params)
 	gbr.fit(train_x, train_y)
+	pred_y = gbr.predict(test_x)
+	np.savetxt(os.path.join(datapath, 'gradient_boost_predict.txt'), pred_y)
 
 
 if __name__ == '__main__':

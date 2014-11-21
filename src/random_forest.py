@@ -35,7 +35,8 @@ def random_forest_regressor(datapath):
 		   'max_depth': 4,
 		   'min_samples_split': 1}
 	rfr = RandomForestRegressor(**params)
-	print(rfr)
+	pred_y = rfr.predict(test_x)
+	np.savetxt(os.path.join(datapath, 'random_forest_pred.txt'), pred_y)
 
 
 if __name__ == '__main__':

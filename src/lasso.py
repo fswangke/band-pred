@@ -38,17 +38,18 @@ def lasso(datapath):
 	# print lasso.coef_     # should plot coef_
 	# print lasso.score(test_x, test_y)
 	pred_y = lasso.predict(test_x)
+	np.savetxt(os.path.join(datapath, 'lasso_pred.txt'), pred_y)
 	# print test_y
 	# print pred_y
 
-	# plot results
-	max_id = 1000
-	x = list(xrange(len(test_y[1:max_id])))
-	h_truth = plt.plot(x, test_y[1:max_id], color = 'green',label='Ground truth')
-	h_pred  = plt.plot(x, pred_y[1:max_id], color = 'red', label='Lasso')
-	h_base  = plt.plot(x, base_y[1:max_id], color = 'blue', label='[1]')
-	#plt.legend(handles = [h_truth, h_pred, h_base])
-	plt.show()
+	## plot results
+	#max_id = 1000
+	#x = list(xrange(len(test_y[1:max_id])))
+	#h_truth = plt.plot(x, test_y[1:max_id], color = 'green',label='Ground truth')
+	#h_pred  = plt.plot(x, pred_y[1:max_id], color = 'red', label='Lasso')
+	#h_base  = plt.plot(x, base_y[1:max_id], color = 'blue', label='[1]')
+	##plt.legend(handles = [h_truth, h_pred, h_base])
+	#plt.show()
 
 
 if __name__ == '__main__':

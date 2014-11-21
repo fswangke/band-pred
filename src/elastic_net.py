@@ -27,6 +27,8 @@ def enet(datapath):
 	train_y = train_y.ravel()
 	enet = ElasticNet(alpha=0.5, l1_ratio=0.7, max_iter=10000)
 	enet.fit(train_x, train_y)
+	pred_y = enet.predict(test_x)
+	np.savetxt(os.path.join(datapath, 'enet_pred.txt'), pred_y)
 
 
 if __name__ == '__main__':
