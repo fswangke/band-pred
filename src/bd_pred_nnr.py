@@ -1,5 +1,5 @@
-# load data
-from sklearn.ensemble import GradientBoostingRegressor
+
+from sklearn.neighbors import KNeighborsRegressor
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.io as sio
@@ -7,7 +7,7 @@ import sys
 import os
 
 
-def gradient_boost_regressor(datapath):
+def nnr(datapath):
 	# load mat
 	datafile = os.path.join(datapath, 'data_numpy.mat')
 	if os.path.exists(datafile) is False:
@@ -22,7 +22,6 @@ def gradient_boost_regressor(datapath):
 	test_xn = data_numpy['testXN'];		# normalized x
 	test_y  = data_numpy['testY'];
 	base_y  = data_numpy['baseY'];
-	train_y = train_y.ravel()
 
 	# visualize one data
 	# index = 10
@@ -31,22 +30,27 @@ def gradient_boost_regressor(datapath):
 	# plt.plot(x, train_x[index])
 	# plt.plot(x, y)
 	# plt.show()
+	neighbor_num = 5
+	neigh = KNeighborsRegressor(n_neighbors=neighbor_num,weights='distance')
+	neigh.fit(train_x, train_y)
+	pred_y = neigh.predict(test_x)
+	np.savetxt(os.path.join(datapath, 'nnr_pred.txt'), pred_y)
+	# print test_y
+	# print pred_y
 
-	# fit lasso should use non-normalized values
-	params = {'n_estimators': 500,
-	   'max_depth': 4,
-	   'min_samples_split': 1,
-	   'learning_rate': 0.01,
-	   'loss': 'ls'}
-	gbr = GradientBoostingRegressor(**params)
-	gbr.fit(train_x, train_y)
-	pred_y = gbr.predict(test_x)
-	np.savetxt(os.path.join(datapath, 'gradient_boost_predict.txt'), pred_y)
+	## plot results
+	#max_id = 1000
+	#x = list(xrange(len(test_y[1:max_id])))
+	#h_truth = plt.plot(x, test_y[1:max_id], color = 'green',label='Ground truth')
+	#h_pred  = plt.plot(x, pred_y[1:max_id], color = 'red', label='Lasso')
+	#h_base  = plt.plot(x, base_y[1:max_id], color = 'blue', label='[1]')
+	##plt.legend(handles = [h_truth, h_pred, h_base])
+	#plt.show()
 
 
 if __name__ == '__main__':
 	if len(sys.argv) < 2:
-		print("Usage: lasso.py datapath")
+		print("Usage: nnr.py datapath")
 		exit()
 	else:
-		gradient_boost_regressor(sys.argv[1])
+		nnr(sys.argv[1])
