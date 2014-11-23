@@ -1,4 +1,4 @@
-function convert_data_to_numpy(datapath, stream_length)
+function convert_raw_data_to_numpy(datapath, stream_length)
 
 if nargin < 2
     stream_length = 96;
@@ -42,16 +42,17 @@ for i = 1 : length(pid)
         fprintf('Incomplete stream %d will be discarded.\n', pid(i));
         continue;
     end
-    cur_data.sendgap = sendgap(cur_index);
-    cur_data.recvgap = recvgap(cur_index);
-    cur_data.actual_bd = ground_truth_data(ground_truth_data(:, 1) == pid(i), 2);
+
     error_idx = find(error_data(:, 1) == pid(i));
     if isempty(error_idx)
         fprintf('Baseline prediction for stream %d not found.\n', pid(i));
-        cur_data.base_bd = NaN;
+        continue;
     else
         cur_data.base_bd = error_data(error_idx, 2);
     end
+    cur_data.sendgap = sendgap(cur_index);
+    cur_data.recvgap = recvgap(cur_index);
+    cur_data.actual_bd = ground_truth_data(ground_truth_data(:, 1) == pid(i), 2);
     data = [data; cur_data];
 end
 fprintf('Assembled streams.\n');

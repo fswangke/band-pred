@@ -1,7 +1,4 @@
-print(__doc__)
-
 from sklearn.linear_model import ElasticNet
-import matplotlib.pyplot as plt
 import numpy as np
 import scipy.io as sio
 import os

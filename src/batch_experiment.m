@@ -2,8 +2,6 @@ clear all;
 close all;
 clc;
 
-% We aim at process raw and smooth data, and compare them
-
 datasets = {
 '../data/exp4_range50_rates8_pkts16';
 '../data/exp5_range50_rates2_pkts64';
@@ -16,16 +14,14 @@ stream_length = [128, %exp4
 128, % exp5
 129, % exp6 ?
 126, % exp7 ?
-128, % Nov9
+128 % Nov9
 ];
 
+regressors = dir('bd_pred*py');
+errors = zeros(length(datasets), 5, length(regressors));
+stds = zeros(length(datasets), 5, length(regressors));
 
-lasso_errors = zeros(length(datasets), 5);
-nnr_errors = zeros(length(datasets), 5);
-lasso_err_std = zeros(length(datasets), 5);
-nnr_err_std = zeros(length(datasets), 5);
-
-for i = 1 : length(datasets)
+parfor i = 1 : length(datasets)
     % convert data
     feature_file = fullfile(datasets{i}, 'data_numpy.mat');
     if ~exist(feature_file, 'file')
@@ -33,90 +29,43 @@ for i = 1 : length(datasets)
     end
 
     data = load(feature_file);
-    % right now we only have lasso and nnr working :(
-    command = sprintf('python ./bd_pred_lasso_smooth.py %s\n', datasets{i});
-    system(command);
-    % collect results
-    lasso_raw = importdata(fullfile(datasets{i}, 'lasso_raw.txt'));
-    lasso_raw_error = abs(lasso_raw' - data.testY) ./ data.testY;
-
-    lasso_raw_fft = importdata(fullfile(datasets{i}, 'lasso_raw_fft.txt'));
-    lasso_raw_fft_error = abs(lasso_raw_fft' - data.testY) ./ data.testY;
-
-    lasso_smooth = importdata(fullfile(datasets{i}, 'lasso_smooth.txt'));
-    lasso_smooth_error = abs(lasso_smooth' - data.testY) ./ data.testY;
-
-    lasso_smooth_fft = importdata(fullfile(datasets{i}, 'lasso_smooth_fft.txt'));
-    lasso_smooth_fft_error = abs(lasso_smooth_fft' - data.testY) ./ data.testY;
-
-    base_error = abs(data.baseY - data.testY) ./ data.testY;
-
-    lasso_errors(i, :) = [mean(base_error), mean(lasso_raw_error), mean(lasso_raw_fft_error), mean(lasso_smooth_error), mean(lasso_smooth_fft_error)];
-    lasso_err_std(i, :) = [std(base_error), std(lasso_raw_error), std(lasso_raw_fft_error), std(lasso_smooth_error), std(lasso_smooth_fft_error)];
-    
-    figure;
-    h1 = histogram(base_error);
-    hold on;
-    h2 = histogram(lasso_raw_error);
-    h3 = histogram(lasso_raw_fft_error);
-    h4 = histogram(lasso_smooth_error);
-    h5 = histogram(lasso_smooth_fft_error);
-    h1.BinWidth = 0.01;
-    h2.BinWidth = 0.01;
-    h3.BinWidth = 0.01;
-    h4.BinWidth = 0.01;
-    h5.BinWidth = 0.01;
-    
-
-    legend('Baseline', 'Lasso on raw', 'Lasso on Raw-FFT', 'Lasso on smooth', 'Lasso on Smooth-FFT');
-    command = sprintf('python ./bd_pred_nnr.py %s\n', datasets{i});
-    system(command);
-    % collect results
-    nnr_raw = importdata(fullfile(datasets{i}, 'nnr_raw.txt'));
-    nnr_raw_error = abs(nnr_raw' - data.testY) ./ data.testY;
-
-    nnr_raw_fft = importdata(fullfile(datasets{i}, 'nnr_raw_fft.txt'));
-    nnr_raw_fft_error = abs(nnr_raw_fft' - data.testY) ./ data.testY;
-
-    nnr_smooth = importdata(fullfile(datasets{i}, 'nnr_smooth.txt'));
-    nnr_smooth_error = abs(nnr_smooth' - data.testY) ./ data.testY;
-
-    nnr_smooth_fft = importdata(fullfile(datasets{i}, 'nnr_smooth_fft.txt'));
-    nnr_smooth_fft_error = abs(nnr_smooth_fft' - data.testY) ./ data.testY;
-
-    nnr_errors(i, :) = [mean(base_error), mean(nnr_raw_error), mean(nnr_raw_fft_error), mean(nnr_smooth_error), mean(nnr_smooth_fft_error)];
-    nnr_err_std(i, :) = [std(base_error), std(nnr_raw_error), std(nnr_raw_fft_error), std(nnr_smooth_error), std(nnr_smooth_fft_error)];
+    for r = 1 : length(regressors)
+        command = sprintf('python %s %s\n', regressors(r).name, datasets{i});
+        system(command);
+        disp(command);
+    end
 end
 
+for i = 1 : length(datasets)
+    % convert data
+    feature_file = fullfile(datasets{i}, 'data_numpy.mat');
 
-figure;
-bar(lasso_errors);
-xlabel('Datasets');
-ylabel('Average relative error');
-legend('Baseline', 'Lasso on raw', 'Lasso on Raw-FFT', 'Lasso on smooth', 'Lasso on Smooth-FFT');
-ax = gca;
-ax.XTickLabel = {'rates8', 'rates2', 'rates3', 'rates6', 'rates4'};
+    data = load(feature_file);
+    for r = 1 : length(regressors)
+        [~, regressors_name, ~] = fileparts(regressors(r).name);
+        regressor_name = strrep(regressors_name, 'bd_pred_', '');
 
-figure;
-bar(lasso_err_std);
-xlabel('Datasets');
-ylabel('Standard variation of relative error');
-legend('Baseline', 'Lasso on raw', 'Lasso on Raw-FFT', 'Lasso on smooth', 'Lasso on Smooth-FFT');
-ax = gca;
-ax.XTickLabel = {'rates8', 'rates2', 'rates3', 'rates6', 'rates4'};
+        pred_raw = importdata(fullfile(datasets{i}, [regressor_name, '_raw.txt']));
+        pred_raw_fft = importdata(fullfile(datasets{i}, [regressor_name, '_raw_fft.txt']));
+        pred_smooth = importdata(fullfile(datasets{i}, [regressor_name, '_smooth.txt']));
+        pred_smooth_fft = importdata(fullfile(datasets{i}, [regressor_name, '_smooth_fft.txt']));
 
-figure;
-bar(nnr_errors);
-xlabel('Datasets');
-ylabel('Average relative error');
-legend('Baseline', 'NNR on raw', 'NNR on Raw-FFT', 'NNR on smooth', 'NNR on Smooth-FFT');
-ax = gca;
-ax.XTickLabel = {'rates8', 'rates2', 'rates3', 'rates6', 'rates4'};
+        pred_raw_error = abs(pred_raw' - data.testY) ./ data.testY;
+        pred_raw_fft_error = abs(pred_raw_fft' - data.testY) ./ data.testY;
+        pred_smooth_error = abs(pred_smooth' - data.testY) ./ data.testY;
+        pred_smooth_fft_error = abs(pred_smooth_fft' - data.testY) ./ data.testY;
+        base_error = abs(data.baseY - data.testY) ./ data.testY;
 
-figure;
-bar(nnr_err_std);
-xlabel('Datasets');
-ylabel('Standard variation of relative error');
-legend('Baseline', 'NNR on raw', 'NNR on Raw-FFT', 'NNR on smooth', 'NNR on Smooth-FFT');
-ax = gca;
-ax.XTickLabel = {'rates8', 'rates2', 'rates3', 'rates6', 'rates4'};
+        errors(i, 1, r) = mean(base_error);
+        errors(i, 2, r) = mean(pred_raw_error);
+        errors(i, 3, r) = mean(pred_raw_fft_error);
+        errors(i, 4, r) = mean(pred_smooth_error);
+        errors(i, 5, r) = mean(pred_smooth_fft_error);
+
+        stds(i, 1, r) = std(base_error);
+        stds(i, 2, r) = std(pred_raw_error);
+        stds(i, 3, r) = std(pred_raw_fft_error);
+        stds(i, 4, r) = std(pred_smooth_error);
+        stds(i, 5, r) = std(pred_smooth_fft_error);
+    end
+end

@@ -1,6 +1,5 @@
 # load data
 from sklearn.ensemble import AdaBoostRegressor
-import matplotlib.pyplot as plt
 import numpy as np
 import scipy.io as sio
 import sys

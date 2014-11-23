@@ -1,6 +1,4 @@
-# load data
 from sklearn.ensemble import GradientBoostingRegressor
-import matplotlib.pyplot as plt
 import numpy as np
 import scipy.io as sio
 import sys
