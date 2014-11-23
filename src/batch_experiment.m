@@ -20,8 +20,10 @@ stream_length = [128, %exp4
 ];
 
 
-errors = zeros(length(datasets), 4);
-err_std = zeros(length(datasets), 4);
+lasso_errors = zeros(length(datasets), 5);
+nnr_errors = zeros(length(datasets), 5);
+lasso_err_std = zeros(length(datasets), 5);
+nnr_err_std = zeros(length(datasets), 5);
 
 parfor i = 1 : length(datasets)
     % convert data
@@ -31,12 +33,15 @@ parfor i = 1 : length(datasets)
     end
 
     data = load(feature_file);
-    % right now we only have lasso working :(
+    % right now we only have lasso and nnr working :(
     command = sprintf('python ./bd_pred_lasso_smooth.py %s\n', datasets{i});
     system(command);
     % collect results
-    lasso_raw = importdata(fullfile(datasets{i}, 'lasso_raw_fft.txt'));
+    lasso_raw = importdata(fullfile(datasets{i}, 'lasso_raw.txt'));
     lasso_raw_error = abs(lasso_raw' - data.testY) ./ data.testY;
+
+    lasso_raw_fft = importdata(fullfile(datasets{i}, 'lasso_raw_fft.txt'));
+    lasso_raw_fft_error = abs(lasso_raw_fft' - data.testY) ./ data.testY;
 
     lasso_smooth = importdata(fullfile(datasets{i}, 'lasso_smooth.txt'));
     lasso_smooth_error = abs(lasso_smooth' - data.testY) ./ data.testY;
@@ -46,22 +51,57 @@ parfor i = 1 : length(datasets)
 
     base_error = abs(data.baseY - data.testY) ./ data.testY;
 
-    errors(i, :) = [mean(base_error), mean(lasso_raw_error), mean(lasso_smooth_error), mean(lasso_smooth_fft_error)];
-    err_std(i, :) = [std(base_error), std(lasso_raw_error), std(lasso_smooth_error), std(lasso_smooth_fft_error)];
+    lasso_errors(i, :) = [mean(base_error), mean(lasso_raw_error), mean(lasso_raw_fft_error), mean(lasso_smooth_error), mean(lasso_smooth_fft_error)];
+    lasso_err_std(i, :) = [std(base_error), std(lasso_raw_error), std(lasso_raw_fft_error), std(lasso_smooth_error), std(lasso_smooth_fft_error)];
+
+    command = sprintf('python ./bd_pred_nnr.py %s\n', datasets{i});
+    system(command);
+    % collect results
+    nnr_raw = importdata(fullfile(datasets{i}, 'nnr_raw.txt'));
+    nnr_raw_error = abs(nnr_raw' - data.testY) ./ data.testY;
+
+    nnr_raw_fft = importdata(fullfile(datasets{i}, 'nnr_raw_fft.txt'));
+    nnr_raw_fft_error = abs(nnr_raw_fft' - data.testY) ./ data.testY;
+
+    nnr_smooth = importdata(fullfile(datasets{i}, 'nnr_smooth.txt'));
+    nnr_smooth_error = abs(nnr_smooth' - data.testY) ./ data.testY;
+
+    nnr_smooth_fft = importdata(fullfile(datasets{i}, 'nnr_smooth_fft.txt'));
+    nnr_smooth_fft_error = abs(nnr_smooth_fft' - data.testY) ./ data.testY;
+
+    nnr_errors(i, :) = [mean(base_error), mean(nnr_raw_error), mean(nnr_raw_fft_error), mean(nnr_smooth_error), mean(nnr_smooth_fft_error)];
+    nnr_err_std(i, :) = [std(base_error), std(nnr_raw_error), std(nnr_raw_fft_error), std(nnr_smooth_error), std(nnr_smooth_fft_error)];
 end
 
+
 figure(1);
-bar(errors);
+bar(lasso_errors);
 xlabel('Datasets');
 ylabel('Average relative error');
-legend('Baseline', 'Lasso on Raw-FFT', 'Lasso on smooth', 'Lasso on Smooth-FFT');
+legend('Baseline', 'Lasso on raw', 'Lasso on Raw-FFT', 'Lasso on smooth', 'Lasso on Smooth-FFT');
 ax = gca;
 ax.XTickLabel = {'rates8', 'rates2', 'rates3', 'rates6', 'rates4'};
 
 figure(2);
-bar(err_std);
+bar(lasso_err_std);
 xlabel('Datasets');
 ylabel('Standard variation of relative error');
-legend('Baseline', 'Lasso on Raw-FFT', 'Lasso on smooth', 'Lasso on Smooth-FFT');
+legend('Baseline', 'Lasso on raw', 'Lasso on Raw-FFT', 'Lasso on smooth', 'Lasso on Smooth-FFT');
+ax = gca;
+ax.XTickLabel = {'rates8', 'rates2', 'rates3', 'rates6', 'rates4'};
+
+figure(3);
+bar(nnr_errors);
+xlabel('Datasets');
+ylabel('Average relative error');
+legend('Baseline', 'NNR on raw', 'NNR on Raw-FFT', 'NNR on smooth', 'NNR on Smooth-FFT');
+ax = gca;
+ax.XTickLabel = {'rates8', 'rates2', 'rates3', 'rates6', 'rates4'};
+
+figure(4);
+bar(nnr_err_std);
+xlabel('Datasets');
+ylabel('Standard variation of relative error');
+legend('Baseline', 'NNR on raw', 'NNR on Raw-FFT', 'NNR on smooth', 'NNR on Smooth-FFT');
 ax = gca;
 ax.XTickLabel = {'rates8', 'rates2', 'rates3', 'rates6', 'rates4'};

@@ -36,9 +36,16 @@ def lasso(datapath):
 	# fit lasso should use non-normalized values
 	alpha = 1
 	lasso_raw = Lasso(alpha = alpha, max_iter = 10000, tol = 0.5)
-	lasso_raw.fit(train_x_raw_fft, train_y)
+	lasso_raw.fit(train_x_raw, train_y)
 	print(lasso_raw)
-	pred_y = lasso_raw.predict(test_x_raw_fft)
+	pred_y = lasso_raw.predict(test_x_raw)
+	np.savetxt(os.path.join(datapath, 'lasso_raw.txt'), pred_y)
+
+	alpha = 1
+	lasso_raw_fft = Lasso(alpha = alpha, max_iter = 10000, tol = 0.5)
+	lasso_raw_fft.fit(train_x_raw_fft, train_y)
+	print(lasso_raw)
+	pred_y = lasso_raw_fft.predict(test_x_raw_fft)
 	np.savetxt(os.path.join(datapath, 'lasso_raw_fft.txt'), pred_y)
 
 	alpha = 1
