@@ -388,6 +388,15 @@ See section 4.4 in the graphics bundle documentation (\url{http://www.ctan.org/t
 A number of width problems arise when LaTeX cannot properly hyphenate a
 line. Please give LaTeX hyphenation hints using the \verb+\-+ command.
 
+\section{Future Work}
+\label{sec:future_work}
+Many probing packages are lost, and we discarded all in-complete probing
+sequences. One interesting problem is how we can take advantages of such
+partial information to infer available bandwidth. We believed that the high
+dimensional sequences actually lay on a much lower dimensional manifold, such
+partial sequence may convey enough information to do the regression. We can use
+techniques like compressed sensing\cite{donoho2006compressed} to do such inference.
+
 
 \subsubsection*{Acknowledgments}
 
