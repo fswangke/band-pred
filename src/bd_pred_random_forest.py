@@ -14,28 +14,45 @@ def random_forest_regressor(datapath):
 
 	data_numpy = sio.loadmat(datafile)
 	# get training and test data
-	train_x = data_numpy['trainX'];
-	train_xn= data_numpy['trainXN']; 	# normalized x
+	train_x_raw = data_numpy['trainX_raw'];
+	train_x_smooth= data_numpy['trainX_smooth'];
 	train_y = data_numpy['trainY'];
-	test_x  = data_numpy['testX'];
-	test_xn = data_numpy['testXN'];		# normalized x
+	test_x_raw  = data_numpy['testX_raw'];
+	test_x_smooth = data_numpy['testX_smooth'];
 	test_y  = data_numpy['testY'];
 	base_y  = data_numpy['baseY'];
+
 	train_y = train_y.ravel()
 
-	# visualize one data
-	# index = 10
-	# x = list(xrange(len(train_x[index])))
-	# y = [train_y[index][0] for i in x]
-	# plt.plot(x, train_x[index])
-	# plt.plot(x, y)
-	# plt.show()
+	x_fft = np.fft.fft(train_x_raw)
+	train_x_raw_fft = np.concatenate((np.imag(x_fft), np.real(x_fft)), axis=1)
+	x_fft = np.fft.fft(test_x_raw)
+	test_x_raw_fft = np.concatenate((np.imag(x_fft), np.real(x_fft)), axis=1)
 
-	# fit lasso should use non-normalized values
-	rfr = RandomForestRegressor()
-	rfr.fit(train_x, train_y)
-	pred_y = rfr.predict(test_x)
-	np.savetxt(os.path.join(datapath, 'random_forest_pred.txt'), pred_y)
+	x_fft = np.fft.fft(train_x_smooth)
+	train_x_smooth_fft = np.concatenate((np.imag(x_fft), np.real(x_fft)), axis=1)
+	x_fft = np.fft.fft(test_x_smooth)
+	test_x_smooth_fft = np.concatenate((np.imag(x_fft), np.real(x_fft)), axis=1)
+
+	rfr_raw = RandomForestRegressor()
+	rfr_raw.fit(train_x_raw, train_y)
+	pred_y = rfr_raw.predict(test_x_raw)
+	np.savetxt(os.path.join(datapath, 'random_forest_raw.txt'), pred_y)
+
+	rfr_raw_fft = RandomForestRegressor()
+	rfr_raw_fft.fit(train_x_raw_fft, train_y)
+	pred_y = rfr_raw_fft.predict(test_x_raw_fft)
+	np.savetxt(os.path.join(datapath, 'random_forest_raw_fft.txt'), pred_y)
+
+	rfr_smooth = RandomForestRegressor()
+	rfr_smooth.fit(train_x_smooth, train_y)
+	pred_y = rfr_smooth.predict(test_x_smooth)
+	np.savetxt(os.path.join(datapath, 'random_forest_smooth.txt'), pred_y)
+
+	rfr_smooth_fft = RandomForestRegressor()
+	rfr_smooth_fft.fit(train_x_smooth_fft, train_y)
+	pred_y = rfr_smooth_fft.predict(test_x_smooth_fft)
+	np.savetxt(os.path.join(datapath, 'random_forest_smooth_fft.txt'), pred_y)
 
 
 if __name__ == '__main__':

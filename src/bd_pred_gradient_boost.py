@@ -15,33 +15,46 @@ def gradient_boost_regressor(datapath):
 
 	data_numpy = sio.loadmat(datafile)
 	# get training and test data
-	train_x = data_numpy['trainX'];
-	train_xn= data_numpy['trainXN']; 	# normalized x
+	train_x_raw = data_numpy['trainX_raw'];
+	train_x_smooth= data_numpy['trainX_smooth'];
 	train_y = data_numpy['trainY'];
-	test_x  = data_numpy['testX'];
-	test_xn = data_numpy['testXN'];		# normalized x
+	test_x_raw  = data_numpy['testX_raw'];
+	test_x_smooth = data_numpy['testX_smooth'];
 	test_y  = data_numpy['testY'];
 	base_y  = data_numpy['baseY'];
+
 	train_y = train_y.ravel()
 
-	# visualize one data
-	# index = 10
-	# x = list(xrange(len(train_x[index])))
-	# y = [train_y[index][0] for i in x]
-	# plt.plot(x, train_x[index])
-	# plt.plot(x, y)
-	# plt.show()
+	x_fft = np.fft.fft(train_x_raw)
+	train_x_raw_fft = np.concatenate((np.imag(x_fft), np.real(x_fft)), axis=1)
+	x_fft = np.fft.fft(test_x_raw)
+	test_x_raw_fft = np.concatenate((np.imag(x_fft), np.real(x_fft)), axis=1)
 
-	# fit lasso should use non-normalized values
-	params = {'n_estimators': 500,
-	   'max_depth': 4,
-	   'min_samples_split': 1,
-	   'learning_rate': 0.01,
-	   'loss': 'ls'}
-	gbr = GradientBoostingRegressor(**params)
-	gbr.fit(train_x, train_y)
-	pred_y = gbr.predict(test_x)
-	np.savetxt(os.path.join(datapath, 'gradient_boost_pred.txt'), pred_y)
+	x_fft = np.fft.fft(train_x_smooth)
+	train_x_smooth_fft = np.concatenate((np.imag(x_fft), np.real(x_fft)), axis=1)
+	x_fft = np.fft.fft(test_x_smooth)
+	test_x_smooth_fft = np.concatenate((np.imag(x_fft), np.real(x_fft)), axis=1)
+
+	params = {'n_estimators': 200}
+	grb_raw = GradientBoostingRegressor(**params)
+	grb_raw.fit(train_x_raw, train_y)
+	pred_y = grb_raw.predict(test_x_raw)
+	np.savetxt(os.path.join(datapath, 'gradient_boost_raw.txt'), pred_y)
+
+	grb_raw_fft = GradientBoostingRegressor(**params)
+	grb_raw_fft.fit(train_x_raw_fft, train_y)
+	pred_y = grb_raw_fft.predict(test_x_raw_fft)
+	np.savetxt(os.path.join(datapath, 'gradient_boost_raw_fft.txt'), pred_y)
+
+	grb_smooth = GradientBoostingRegressor(**params)
+	grb_smooth.fit(train_x_smooth, train_y)
+	pred_y = grb_smooth.predict(test_x_smooth)
+	np.savetxt(os.path.join(datapath, 'gradient_boost_smooth.txt'), pred_y)
+
+	grb_smooth_fft = GradientBoostingRegressor(**params)
+	grb_smooth_fft.fit(train_x_smooth_fft, train_y)
+	pred_y = grb_smooth_fft.predict(test_x_smooth_fft)
+	np.savetxt(os.path.join(datapath, 'gradient_boost_smooth_fft.txt'), pred_y)
 
 
 if __name__ == '__main__':
