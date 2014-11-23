@@ -25,7 +25,7 @@ nnr_errors = zeros(length(datasets), 5);
 lasso_err_std = zeros(length(datasets), 5);
 nnr_err_std = zeros(length(datasets), 5);
 
-parfor i = 1 : length(datasets)
+for i = 1 : length(datasets)
     % convert data
     feature_file = fullfile(datasets{i}, 'data_numpy.mat');
     if ~exist(feature_file, 'file')
@@ -53,7 +53,22 @@ parfor i = 1 : length(datasets)
 
     lasso_errors(i, :) = [mean(base_error), mean(lasso_raw_error), mean(lasso_raw_fft_error), mean(lasso_smooth_error), mean(lasso_smooth_fft_error)];
     lasso_err_std(i, :) = [std(base_error), std(lasso_raw_error), std(lasso_raw_fft_error), std(lasso_smooth_error), std(lasso_smooth_fft_error)];
+    
+    figure;
+    h1 = histogram(base_error);
+    hold on;
+    h2 = histogram(lasso_raw_error);
+    h3 = histogram(lasso_raw_fft_error);
+    h4 = histogram(lasso_smooth_error);
+    h5 = histogram(lasso_smooth_fft_error);
+    h1.BinWidth = 0.01;
+    h2.BinWidth = 0.01;
+    h3.BinWidth = 0.01;
+    h4.BinWidth = 0.01;
+    h5.BinWidth = 0.01;
+    
 
+    legend('Baseline', 'Lasso on raw', 'Lasso on Raw-FFT', 'Lasso on smooth', 'Lasso on Smooth-FFT');
     command = sprintf('python ./bd_pred_nnr.py %s\n', datasets{i});
     system(command);
     % collect results
@@ -74,7 +89,7 @@ parfor i = 1 : length(datasets)
 end
 
 
-figure(1);
+figure;
 bar(lasso_errors);
 xlabel('Datasets');
 ylabel('Average relative error');
@@ -82,7 +97,7 @@ legend('Baseline', 'Lasso on raw', 'Lasso on Raw-FFT', 'Lasso on smooth', 'Lasso
 ax = gca;
 ax.XTickLabel = {'rates8', 'rates2', 'rates3', 'rates6', 'rates4'};
 
-figure(2);
+figure;
 bar(lasso_err_std);
 xlabel('Datasets');
 ylabel('Standard variation of relative error');
@@ -90,7 +105,7 @@ legend('Baseline', 'Lasso on raw', 'Lasso on Raw-FFT', 'Lasso on smooth', 'Lasso
 ax = gca;
 ax.XTickLabel = {'rates8', 'rates2', 'rates3', 'rates6', 'rates4'};
 
-figure(3);
+figure;
 bar(nnr_errors);
 xlabel('Datasets');
 ylabel('Average relative error');
@@ -98,7 +113,7 @@ legend('Baseline', 'NNR on raw', 'NNR on Raw-FFT', 'NNR on smooth', 'NNR on Smoo
 ax = gca;
 ax.XTickLabel = {'rates8', 'rates2', 'rates3', 'rates6', 'rates4'};
 
-figure(4);
+figure;
 bar(nnr_err_std);
 xlabel('Datasets');
 ylabel('Standard variation of relative error');
