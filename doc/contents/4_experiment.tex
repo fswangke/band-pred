@@ -36,10 +36,59 @@
    \label{fig:fft}
 \end{figure}
 
-\subsection{Parameter Setting}
+\subsection{Experimental Setting}
 \label{sub:parameter_setting}
 
+We collected data using the experimental setting in \cite{Yin2014} and has the
+following datasets for our evaluation. We discarded incomplete streams. And for
+cases where we don't have baseline prediction from \cite{Yin2014} we cannot do
+a fair comparison, we discarded such stream. Detailed statistics of datasets
+can be found in Table~\ref{tab:dataset}.
 
+\begin{table}[htpb]
+   \centering
+   \caption{Dataset}
+   \label{tab:dataset}
+   \begin{tabular}{|c|c|c|c|c|l|l|l|l|}
+      \hline
+      Name & Range & Rate & Packets & Length & Total & Valid          & Training & Test\\ \hline
+      Exp4 & 50    & 8    & 16      & 128    & 11003 & 7475(67.94\%)  & 5233     & 2242 \\
+      Exp5 & 50    & 2    & 16      & 128    & 11003 & 7188(65.33\%)  & 5032     & 2156 \\
+      Exp6 & 50    & 3    & 16      & 129    & 10691 & 883(8.26\%)    & 618      & 265 \\
+      Exp7 & 50    & 6    & 16      & 126    & 11016 & 7203(65.39\%)  & 5042     & 2161 \\
+      Exp8 & 50    & 4    & 16      & 128    & 33310 & 18185(54.59\%) & 12730    & 5455  \\ \hline
+   \end{tabular}
+\end{table}
+
+In order to achieve better performance, we ran a 5 fold cross validation on the
+training dataset to tune parameters of different estimators. Here are the
+parameter settings we use for prediction:
+\begin{itemize}
+   \item AdaBoost: we used 200 decision tree regressor as base estimators. With
+      learning rate of 1.0, and linear loss function, we acheived an error rate
+      of 2.18\%.
+   \item Elastic net: we used a smaller learning rate $\alpha=0.5$, together
+      with a $L_1$ ratio $\rho=0.5$. Optimization by coordinate descent can
+      converage within 50000 iterations with a threshold of $0.3$.
+   \item Gradient boost: we used least squares regression as the loss function,
+      with learning rate of $0.1$, 200 boosting stages. For each individual
+      regression estimator, we constrain the maximum depth to be 3, minimum
+      number of samples of spliting internal node to be 2, minimum number of
+      samples required to be a leaf node to be 2.
+   \item Lasso: we adopted a higher learning rate of $\alpha=1$. Optimization
+      by coordinate descent can converage within 10000 iterations with a
+      threshold of $0.5$. With such a relatively high threshold, we can still
+      achieve an average error rate of $2.03\%$.
+   \item Nearest neighbor regression: we used a fix number of 10 nearest
+      neighbors for the regression. Neighboring data points are weighted by
+      the inverse of the distance to the query data point. In order to speed up
+      searching, we adopted KD-tree as the underlying structure. Leaf node size
+      is set to 30. Euclidean distance is used as distance metric.
+   \item Random forest regressor: we used 10 trees to assemble the random
+      forest. Mean squared error is used as the split quality measure. Minimum
+      number of samples required to split an internal node is set to 2, minimum
+      number of samples in newly created leaves is set to 1.
+\end{itemize}
 
 \subsection{Benchmark}
 \label{sub:benchmark}
@@ -51,7 +100,7 @@
 
 \begin{table}[htpb]
    \centering
-   \caption{Average processing time over 12279 streams.}
+   \caption{Average processing time over 28655 streams.}
    \label{tab:timing}
    \begin{tabular}{|c|r|r|r|r|r|r|}
       \hline
@@ -74,11 +123,11 @@
    \centering
    %6.97
    \caption{Average accuracy of different estimators over differnt features. We
-      evaluated the average accuracy over all datasets, with 12279 probing
+      evaluated the average accuracy over all test datasets, with 12279 probing
       sequences in total. We include accuracy increases compared with baseline
       from \cite{Yin2014} in parentheses. \cite{Yin2014} has an average
       accuracy of 6.97\%.}
-   \label{tab:label}
+   \label{tab:accuracy}
    \begin{tabular}{|c|c|c|c|c|}
       \hline
       Algorithms     & Raw                      & Raw FFT                  & Smooth                   & Smooth FFT \\ \hline
