@@ -2,6 +2,9 @@
 \usepackage{nips14submit_e,times}
 \usepackage{hyperref}
 \usepackage{url}
+\usepackage{multirow}
+\usepackage{graphicx}
+\input{kewangcfg}
 %\documentstyle[nips14submit_09,times,art10]{article} % For LaTeX 2.09
 
 \title{Ultra-high Speed Network Bandwidth Estimation using
@@ -266,6 +269,94 @@ Soma             &Cell body (contains cell nucleus) \\
 \end{tabular}
 \end{center}
 \end{table}
+
+
+\begin{table}[htpb]
+   \centering
+   \caption{Average processing time.}
+   \label{tab:timing}
+   \begin{tabular}{|c|p{4em}|p{4em}|p{4em}|p{4em}|p{4em}|p{4em}|}
+      \hline
+      \multirow{2}{*}{Algorithms} & \multicolumn{2}{c|}{Feature extraction} &
+      \multicolumn{4}{c|}{Training} \\ \cline{2-7}
+      & Raw stream & Smooth stream & Raw feature & Raw FFT & Smooth
+      feature & Smooth FFT \\ \hline
+      AdaBoost       & 15.71 & 14.94 & 2026.13 & 35766.15 & 13109.74 & 32991.03\\
+      Elastic net    & 16.60 & 16.06 & 151.96  & 577.30   & 121.73   & 537.47\\
+      Gradient boost & 12.55 & 12.52 & 8090.82 & 45908.08 & 9695.63  & 46406.90\\
+      Lasso          & 16.23 & 16.14 & 145.09  & 507.52   & 139.83   & 567.07\\
+      NNR            & 15.78 & 15.59 & 18.75   & 33.29    & 18.34    & 35.41\\
+      Random forest  & 15.80 & 15.61 & 3139.64 & 9236.24  & 3207.93  & 9380.83\\
+      \hline
+   \end{tabular}
+\end{table}
+
+
+\begin{figure}[htpb]
+   \centering
+   \subfloat[error]{
+      \includegraphics[width=0.45\linewidth]{figures/error_exp4_range50_rates8_pkts16.pdf}
+   }
+   \quad
+   \subfloat[std]{
+      \includegraphics[width=0.45\linewidth]{figures/std_exp4_range50_rates8_pkts16.pdf}
+   }
+   \caption{Dataset: range 50, rates 8, packets 16}
+   \label{fig:name}
+\end{figure}
+
+\begin{figure}[htpb]
+   \centering
+   \subfloat[error]{
+      \includegraphics[width=0.45\linewidth]{figures/error_exp5_range50_rates2_pkts64.pdf}
+   }
+   \quad
+   \subfloat[error]{
+      \includegraphics[width=0.45\linewidth]{figures/std_exp5_range50_rates2_pkts64.pdf}
+   }
+   \caption{Name}
+   \label{fig:name}
+\end{figure}
+
+\begin{figure}[htpb]
+   \centering
+   \subfloat[error]{
+      \includegraphics[width=0.45\linewidth]{figures/error_exp6_range50_rates3_pkts43.pdf}
+   }
+   \quad
+   \subfloat[error]{
+      \includegraphics[width=0.45\linewidth]{figures/std_exp6_range50_rates3_pkts43.pdf}
+   }
+   \caption{Name}
+   \label{fig:name}
+\end{figure}
+
+\begin{figure}[htpb]
+   \centering
+   \subfloat[error]{
+      \includegraphics[width=0.45\linewidth]{figures/error_exp7_range50_rates6_pkts21.pdf}
+   }
+   \quad
+   \subfloat[error]{
+      \includegraphics[width=0.45\linewidth]{figures/std_exp7_range50_rates6_pkts21.pdf}
+   }
+   \caption{Name}
+   \label{fig:name}
+\end{figure}
+
+\begin{figure}[htpb]
+   \centering
+   \subfloat[error]{
+      \includegraphics[width=0.45\linewidth]{figures/error_Nov9_range50_rates4_pkts32.pdf}
+   }
+   \quad
+   \subfloat[error]{
+      \includegraphics[width=0.45\linewidth]{figures/std_Nov9_range50_rates4_pkts32.pdf}
+   }
+   \caption{Name}
+   \label{fig:name}
+\end{figure}
+
 
 \section{Final instructions}
 Do not change any aspects of the formatting parameters in the style files.

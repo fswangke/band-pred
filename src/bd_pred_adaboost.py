@@ -4,6 +4,7 @@ import numpy as np
 import scipy.io as sio
 import sys
 import os
+import time
 
 
 def adaboost(datapath):
@@ -24,35 +25,62 @@ def adaboost(datapath):
 
 	train_y = train_y.ravel()
 
+	t_start = time.perf_counter()
 	x_fft = np.fft.fft(train_x_raw)
+	t_end = time.perf_counter()
+	raw_fft_time = t_end - t_start;
 	train_x_raw_fft = np.concatenate((np.imag(x_fft), np.real(x_fft)), axis=1)
 	x_fft = np.fft.fft(test_x_raw)
 	test_x_raw_fft = np.concatenate((np.imag(x_fft), np.real(x_fft)), axis=1)
 
+	t_start = time.perf_counter()
 	x_fft = np.fft.fft(train_x_smooth)
+	t_end = time.perf_counter()
+	smooth_fft_time = t_end - t_start;
 	train_x_smooth_fft = np.concatenate((np.imag(x_fft), np.real(x_fft)), axis=1)
 	x_fft = np.fft.fft(test_x_smooth)
 	test_x_smooth_fft = np.concatenate((np.imag(x_fft), np.real(x_fft)), axis=1)
 
 	abr_raw = AdaBoostRegressor(n_estimators=200)
+	t_start = time.perf_counter()
 	abr_raw.fit(train_x_raw, train_y)
+	t_end = time.perf_counter()
+	abr_raw_time = t_end - t_start;
 	pred_y = abr_raw.predict(test_x_raw)
 	np.savetxt(os.path.join(datapath, 'adaboost_raw.txt'), pred_y)
 
 	abr_raw_fft = AdaBoostRegressor(n_estimators=200)
+	t_start = time.perf_counter()
 	abr_raw_fft.fit(train_x_raw_fft, train_y)
+	t_end = time.perf_counter()
+	abr_raw_fft_time = t_end - t_start;
 	pred_y = abr_raw_fft.predict(test_x_raw_fft)
 	np.savetxt(os.path.join(datapath, 'adaboost_raw_fft.txt'), pred_y)
 
 	abr_smooth = AdaBoostRegressor(n_estimators=200)
+	t_start = time.perf_counter()
 	abr_smooth.fit(train_x_smooth, train_y)
+	t_end = time.perf_counter()
+	abr_smooth_time = t_end - t_start;
 	pred_y = abr_smooth.predict(test_x_smooth)
 	np.savetxt(os.path.join(datapath, 'adaboost_smooth.txt'), pred_y)
 
 	abr_smooth_fft = AdaBoostRegressor(n_estimators=200)
+	t_start = time.perf_counter()
 	abr_smooth_fft.fit(train_x_smooth_fft, train_y)
+	t_end = time.perf_counter()
+	abr_smooth_fft_time = t_end - t_start;
 	pred_y = abr_smooth_fft.predict(test_x_smooth_fft)
 	np.savetxt(os.path.join(datapath, 'adaboost_smooth_fft.txt'), pred_y)
+
+	f_time = open(os.path.join(datapath, 'adaboost_time.txt'), 'w')
+	f_time.write(str(raw_fft_time) + '\n')
+	f_time.write(str(smooth_fft_time)+ '\n')
+	f_time.write(str(abr_raw_time)+ '\n')
+	f_time.write(str(abr_raw_fft_time)+ '\n')
+	f_time.write(str(abr_smooth_time)+ '\n')
+	f_time.write(str(abr_smooth_fft_time)+ '\n')
+	f_time.close()
 
 
 if __name__ == '__main__':
