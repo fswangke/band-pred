@@ -101,3 +101,40 @@ for i = 1 : length(datasets)
     print(fig_h, '-dpng', png_name);
     close(fig_h);
 end
+
+
+i = 1;
+feature_file = fullfile(datasets{i}, 'data_numpy.mat');
+data = load(feature_file);
+for r = 1 : length(regressors)
+    [~, clf_filename, ~] = fileparts(regressors(r).name);
+    regressor_name = strrep(clf_filename, 'bd_pred_', '');
+
+    pred_raw = importdata(fullfile(datasets{i}, [regressor_name, '_raw.txt']));
+    pred_raw_fft = importdata(fullfile(datasets{i}, [regressor_name, '_raw_fft.txt']));
+    pred_smooth = importdata(fullfile(datasets{i}, [regressor_name, '_smooth.txt']));
+    pred_smooth_fft = importdata(fullfile(datasets{i}, [regressor_name, '_smooth_fft.txt']));
+
+    pred_raw_error = abs(pred_raw' - data.testY) ./ data.testY;
+    pred_raw_fft_error = abs(pred_raw_fft' - data.testY) ./ data.testY;
+    pred_smooth_error = abs(pred_smooth' - data.testY) ./ data.testY;
+    pred_smooth_fft_error = abs(pred_smooth_fft' - data.testY) ./ data.testY;
+    base_error = abs(data.baseY - data.testY) ./ data.testY;
+
+    [~, dataset_name, ~] = fileparts(datasets{i});
+    fig_h = figure(1);
+    h1 = histogram(pred_smooth_fft_error);
+    hold on;
+    h2 = histogram(base_error);
+    h1.Normalization = 'count';
+    h2.Normalization = 'count';
+    h1.BinWidth = 0.01;
+    h2.BinWidth = 0.01;
+    xlabel('Relative error');
+    legend(strrep(regressor_name, '_', ' '), 'Baseline')
+    pdf_name = sprintf('histogram_%s.pdf', regressor_name);
+    print(fig_h, '-dpdf', pdf_name);
+    png_name = sprintf('histogram_%s.png', regressor_name);
+    print(fig_h, '-dpng', png_name);
+    close(fig_h);
+end
