@@ -1,9 +1,12 @@
 \section{Experiment}
 \label{sec:experiment}
+
 \subsection{Feature Engineering}
 \label{sub:feature_engineering}
+
 \subsubsection{Sequence Smoothing}
 \label{ssub:sequence_smoothing}
+
 \begin{figure}[htpb]
    \centering
    \subfloat[Send gaps]{
@@ -33,30 +36,61 @@
    \label{fig:fft}
 \end{figure}
 
+\subsection{Parameter Setting}
+\label{sub:parameter_setting}
+
+
+
+\subsection{Benchmark}
+\label{sub:benchmark}
+
+\subsubsection{Computation Performance}
+\label{ssub:computation_performance}
+
 
 
 \begin{table}[htpb]
    \centering
-   \caption{Average processing time.}
+   \caption{Average processing time over 12279 streams.}
    \label{tab:timing}
    \begin{tabular}{|c|r|r|r|r|r|r|}
       \hline
       \multirow{2}{*}{Algorithms} & \multicolumn{2}{c|}{Feature extraction} &
       \multicolumn{4}{c|}{Training} \\ \cline{2-7}
-                     & Raw   & Smooth & Raw     & Raw FFT  & Smooth   & Smooth FFT \\ \hline
-      AdaBoost       & 15.71 & 14.94  & 2026.13 & 35766.15 & 13109.74 & 32991.03\\
-      Elastic net    & 16.60 & 16.06  & 151.96  & 577.30   & 121.73   & 537.47\\
-      Gradient boost & 12.55 & 12.52  & 8090.82 & 45908.08 & 9695.63  & 46406.90\\
-      Lasso          & 16.23 & 16.14  & 145.09  & 507.52   & 139.83   & 567.07\\
-      NNR            & 15.78 & 15.59  & 18.75   & 33.29    & 18.34    & 35.41\\
-      Random forest  & 15.80 & 15.61  & 3139.64 & 9236.24  & 3207.93  & 9380.83\\
+                       & Raw   & Smooth & Raw            & Raw FFT        & Smooth         & Smooth FFT \\ \hline
+      AdaBoost         & 15.71 & 14.94  & 2026.13        & 35766.15       & 13109.74       & 32991.03\\
+      Elastic net      & 16.60 & 16.06  & 151.96         & 577.30         & 121.73         & 537.47\\
+      Gradient boost   & 12.55 & 12.52  & 8090.82        & 45908.08       & 9695.63        & 46406.90\\
+      Lasso            & 16.23 & 16.14  & 145.09         & 507.52         & 139.83         & 567.07\\
+      NNR              & 15.78 & 15.59  & \textbf{18.75} & \textbf{33.29} & \textbf{18.34} & \textbf{35.41}\\
+      Random forest    & 15.80 & 15.61  & 3139.64        & 9236.24        & 3207.93        & 9380.83\\
       \hline
    \end{tabular}
 \end{table}
 
-\subsection{Benchmark}
-\label{sub:benchmark}
-
+\subsubsection{Accuracy}
+\label{ssub:accuracy}
+\begin{table}[htpb]
+   \centering
+   %6.97
+   \caption{Average accuracy of different estimators over differnt features. We
+      evaluated the average accuracy over all datasets, with 12279 probing
+      sequences in total. We include accuracy increases compared with baseline
+      from \cite{Yin2014} in parentheses. \cite{Yin2014} has an average
+      accuracy of 6.97\%.}
+   \label{tab:label}
+   \begin{tabular}{|c|c|c|c|c|}
+      \hline
+      Algorithms     & Raw                      & Raw FFT                  & Smooth                   & Smooth FFT \\ \hline
+      AdaBoost       & 2.82\%(59.43\%)          & 2.38\%(65.72\%)          & 2.29\%(67.14\%)          & 2.18\%(68.65\%)\\
+      Elastic net    & 2.30\%(66.95\%)          & 2.19\%(68.58\%)          & 2.16\%(68.97\%)          & 1.96\%(71.87\%)\\
+      Gradient boost & 2.41\%(65.34\%)          & \textbf{1.96\%}(71.75\%) & \textbf{1.89\%}(72.88\%) & \textbf{1.82\%}(73.77\%)\\
+      Lasso          & 2.70\%(61.18\%)          & 2.37\%(65.89\%)          & 2.25\%(67.65\%)          & 2.03\%(70.78\%)\\
+      NNR            & \textbf{2.29\%}(67.11\%) & 2.29\%(67.11\%)          & 2.17\%(68.83\%)          & 2.17\%(68.83\%)\\
+      Random forest  & 2.35\%(66.26\%)          & 2.01\%(71.06\%)          & 2.05\%(70.47\%)          & 1.89\%(72.86\%)\\
+      \hline
+   \end{tabular}
+\end{table}
 
 \begin{figure}[htpb]
    \centering

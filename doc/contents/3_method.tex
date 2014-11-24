@@ -6,9 +6,16 @@
 
 \subsubsection{Elastic net}
 \label{ssub:elastic_net}
+\begin{equation}
+  \min_w\frac{1}{2N}\|Xw - y\|^2_2 + \alpha\rho\|w\|_1 + \frac{1}{2}\alpha(1-\rho)\|w\|^2_2
+\end{equation}
 
 \subsubsection{Lasso}
 \label{ssub:lasso}
+
+\begin{equation}
+  \min_w\frac{1}{2N}\|Xw - y\|^2_2 + \alpha\|w\|_1
+\end{equation}
 
 \subsection{Ensemble methods}
 \label{sub:ensemble_methods}
