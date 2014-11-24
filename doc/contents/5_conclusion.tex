@@ -1,2 +1,34 @@
 \section{Conclusion}
 \label{sec:conclusion}
+We proposed to use machine learning techniques to predict available bandwidth
+in ultra-high speed networks. We trained different regression algorithms across
+different different datasets, and demonstrated the feasibility of such learning
+based approaches. Our estimators are robust to different probing speed,
+different probing length. Although we have better performances in some
+datasets, but for new network environments without training data, such methods
+won't be promising.
+
+\section{Future Work}
+\label{sec:future_work}
+As can be seen in Table~\ref{tab:dataset}, many probing packages are lost, and
+we discarded all in-complete probing sequences. One interesting problem is how
+we can take advantages of such partial information to infer available
+bandwidth. We believed that the high dimensional sequences actually lay on a
+much lower dimensional manifold, such partial sequence may convey enough
+information to do the regression. We can use techniques like compressed
+sensing\cite{donoho2006compressed} to do such inference.
+
+We fit models to a specific network setting and environments, but real-world
+network environments are complex and varying. The generalization ability of
+learned models to new environments is beyond the scope of this course project,
+but can be an interesting problem to investigate.
+
+We also stated that lacking training dataset can harm the performance of
+machine learning approaches. One way to mitigate such problem is adopting
+online learning algorithms. Training data are feeded into the currently learned
+model, and the model keep updating itself based on new input data.
+
+\subsubsection*{Acknowledgments}
+
+We specially thank Qianwen Yin for providing datasets (both raw and smoothed)
+and inspiring discussions.

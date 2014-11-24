@@ -15,6 +15,7 @@
    \quad
    \subfloat[Received gaps]{
       \includegraphics[width=0.45\linewidth]{figures/smooth_recv.pdf}
+      \label{fig:smoothing:recv}
    }
    \caption{Smoothing raw packet gaps.}
    \label{fig:smoothing}
@@ -38,12 +39,13 @@
 
 \subsection{Experimental Setting}
 \label{sub:parameter_setting}
-
-We collected data using the experimental setting in \cite{Yin2014} and has the
-following datasets for our evaluation. We discarded incomplete streams. And for
-cases where we don't have baseline prediction from \cite{Yin2014} we cannot do
-a fair comparison, we discarded such stream. Detailed statistics of datasets
-can be found in Table~\ref{tab:dataset}.
+In order to test the generalization and robustness of the estimators, we
+collect probing streams with different settings.
+For each dataset, we specify a range of probing speed, and the number of packet
+sending rate used for probing, together with the number of packets sent on a
+specific rate. With a fixed setting, we collect dataset using the experimental
+setting in \cite{Yin2014}. Incomplete and invalid streams are discarded.
+Detailed statistics of datasets can be found in Table~\ref{tab:dataset}.
 
 \begin{table}[htpb]
    \centering
@@ -51,12 +53,12 @@ can be found in Table~\ref{tab:dataset}.
    \label{tab:dataset}
    \begin{tabular}{|c|c|c|c|c|l|l|l|l|}
       \hline
-      Name & Range & Rate & Packets & Length & Total & Valid          & Training & Test\\ \hline
-      Exp4 & 50    & 8    & 16      & 128    & 11003 & 7475(67.94\%)  & 5233     & 2242 \\
-      Exp5 & 50    & 2    & 16      & 128    & 11003 & 7188(65.33\%)  & 5032     & 2156 \\
-      Exp6 & 50    & 3    & 16      & 129    & 10691 & 883(8.26\%)    & 618      & 265 \\
-      Exp7 & 50    & 6    & 16      & 126    & 11016 & 7203(65.39\%)  & 5042     & 2161 \\
-      Exp8 & 50    & 4    & 16      & 128    & 33310 & 18185(54.59\%) & 12730    & 5455  \\ \hline
+      Name & Range & \# Rate & \# Packets & Length & Total & Valid          & Training & Test\\ \hline
+      Exp4 & 50    & 8       & 16         & 128    & 11003 & 7475(67.94\%)  & 5233     & 2242 \\
+      Exp5 & 50    & 2       & 16         & 128    & 11003 & 7188(65.33\%)  & 5032     & 2156 \\
+      Exp6 & 50    & 3       & 16         & 129    & 10691 & 883(8.26\%)    & 618      & 265 \\
+      Exp7 & 50    & 6       & 16         & 126    & 11016 & 7203(65.39\%)  & 5042     & 2161 \\
+      Exp8 & 50    & 4       & 16         & 128    & 33310 & 18185(54.59\%) & 12730    & 5455  \\ \hline
    \end{tabular}
 \end{table}
 
@@ -65,18 +67,18 @@ training dataset to tune parameters of different estimators. Here are the
 parameter settings we use for prediction:
 \begin{itemize}
    \item AdaBoost: we used 200 decision tree regressor as base estimators. With
-      learning rate of 1.0, and linear loss function, we acheived an error rate
+      learning rate of 1.0, and linear loss function, we achieved an error rate
       of 2.18\%.
    \item Elastic net: we used a smaller learning rate $\alpha=0.5$, together
       with a $L_1$ ratio $\rho=0.5$. Optimization by coordinate descent can
-      converage within 50000 iterations with a threshold of $0.3$.
+      converge within 50000 iterations with a threshold of $0.3$.
    \item Gradient boost: we used least squares regression as the loss function,
       with learning rate of $0.1$, 200 boosting stages. For each individual
       regression estimator, we constrain the maximum depth to be 3, minimum
-      number of samples of spliting internal node to be 2, minimum number of
+      number of samples of splitting internal node to be 2, minimum number of
       samples required to be a leaf node to be 2.
    \item Lasso: we adopted a higher learning rate of $\alpha=1$. Optimization
-      by coordinate descent can converage within 10000 iterations with a
+      by coordinate descent can coverage within 10000 iterations with a
       threshold of $0.5$. With such a relatively high threshold, we can still
       achieve an average error rate of $2.03\%$.
    \item Nearest neighbor regression: we used a fix number of 10 nearest
@@ -93,10 +95,24 @@ parameter settings we use for prediction:
 \subsection{Benchmark}
 \label{sub:benchmark}
 
+We randomly partitioned the dataset into training set (70\%) and test
+set(30\%), as shown in Table~\ref{tab:dataset}. We train and cross validate
+estimators on the training set, all following benchmark is performed on the
+isolated test dataset.
+
 \subsubsection{Computation Performance}
 \label{ssub:computation_performance}
 
+Our primary goal of this project is to investigate the possibility of applying
+machine learning techniques to predicting available bandwidth in real world
+networking experimental settings. Computation efficiency is not our primary
+concentration. If learning based estimators were to be deployed in real world
+networking environments, efficiency is an important factor especially for
+real-time applications.
 
+Compared with training, prediction takes considerably less amount of time and
+resources. We list only average feature transformation and training time in
+Table~\ref{tab:timing}.
 
 \begin{table}[htpb]
    \centering
@@ -117,33 +133,140 @@ parameter settings we use for prediction:
    \end{tabular}
 \end{table}
 
+We evaluated the average accuracy over all test datasets, with 12279 probing
+sequences in total. We include standard derivation of the average
+accuracy in parentheses. \cite{Yin2014} has an average accuracy of 6.97\%
+with standard derivation of $\sigma=0.0451$.
+
 \subsubsection{Accuracy}
 \label{ssub:accuracy}
 \begin{table}[htpb]
    \centering
    %6.97
-   \caption{Average accuracy of different estimators over differnt features. We
-      evaluated the average accuracy over all test datasets, with 12279 probing
-      sequences in total. We include accuracy increases compared with baseline
-      from \cite{Yin2014} in parentheses. \cite{Yin2014} has an average
-      accuracy of 6.97\%.}
+   \caption{Average accuracy of different estimators over different features.}
    \label{tab:accuracy}
    \begin{tabular}{|c|c|c|c|c|}
       \hline
-      Algorithms     & Raw                      & Raw FFT                  & Smooth                   & Smooth FFT \\ \hline
-      AdaBoost       & 2.82\%(59.43\%)          & 2.38\%(65.72\%)          & 2.29\%(67.14\%)          & 2.18\%(68.65\%)\\
-      Elastic net    & 2.30\%(66.95\%)          & 2.19\%(68.58\%)          & 2.16\%(68.97\%)          & 1.96\%(71.87\%)\\
-      Gradient boost & 2.41\%(65.34\%)          & \textbf{1.96\%}(71.75\%) & \textbf{1.89\%}(72.88\%) & \textbf{1.82\%}(73.77\%)\\
-      Lasso          & 2.70\%(61.18\%)          & 2.37\%(65.89\%)          & 2.25\%(67.65\%)          & 2.03\%(70.78\%)\\
-      NNR            & \textbf{2.29\%}(67.11\%) & 2.29\%(67.11\%)          & 2.17\%(68.83\%)          & 2.17\%(68.83\%)\\
-      Random forest  & 2.35\%(66.26\%)          & 2.01\%(71.06\%)          & 2.05\%(70.47\%)          & 1.89\%(72.86\%)\\
+      Algorithms     & Raw                     & Raw FFT                 & Smooth                  & Smooth FFT \\ \hline
+      AdaBoost       & 2.82\%(0.0194)          & 2.38\%(0.0160)          & 2.29\%(0.0151)          & 2.18\%(0.0148)\\
+      Elastic net    & 2.30\%(0.0159)          & 2.19\%(0.0162)          & 2.16\%(0.0145)          & 1.96\%(0.0140)\\
+      Gradient boost & 2.41\%(0.0177)          & \textbf{1.96\%}(0.0144) & \textbf{1.89\%}(0.0135) & \textbf{1.82\%}(0.0134)\\
+      Lasso          & 2.70\%(0.0190)          & 2.37\%(0.0172)          & 2.25\%(0.0151)          & 2.03\%(0.0146)\\
+      NNR            & \textbf{2.29\%}(0.0169) & 2.29\%(0.0169)          & 2.17\%(0.0158)          & 2.17\%(0.0158)\\
+      Random forest  & 2.35\%(0.0178)          & 2.01\%(0.0153)          & 2.05\%(0.0148)          & 1.89\%(0.0144)\\
       \hline
    \end{tabular}
 \end{table}
 
+We also show the prediction accuracy of each estimator over different datasets
+in Figure~\ref{fig:error}. \cite{Yin2014} produces satisfying results
+over different network. But as can be seen from
+Figure~\ref{fig:error:adaboost}, accuracy of \cite{Yin2014} can vary across
+different datasets. Comparatively, our estimators demonstrated stronger
+robustness over different network settings.
+
+For machine learning based approaches to work well, the amount and quality of
+available training data are important. For example, we can see an increase in
+error rate on the 3-rate datasets in Figure~\ref{fig:error:elasticnet} and
+Figure~\ref{fig:error:gradientboost}. In Table~\ref{tab:dataset} this dataset
+has only 8\% valid streams, leading to a smaller training set. For methods with
+a larger parameter space, such method are more likely to underfit.
+
+We tried two different feature engineering methods over the raw stream data, as
+stated in Section~\ref{sub:feature_engineering}. From Figure~\ref{fig:error} we
+can see that both feature engineering approaches are effective. By applying FFT
+over raw sequences, we actually transformed the raw features into a temparal
+invariant representation. Intuitively, this is helpful because the shifting of
+peaks of raw signals(see Figure~\ref{fig:smoothing:recv} for an example) can
+lead to misalignment along different dimensions of the feature vectors we
+assembled. By converting the raw signal to frequency space, such temparal shift
+will be neglected, thus feature vectors can better capture the underlying
+models.
+
+On the other hand, smoothing helps to boost performance by removing noise data
+points in the feature vectors. By transforming the raw sequence into smooth
+data, we can capture features that are more important for regression. The
+smoothing procedure we applied can actually be regarded as a domain-knowledge
+powered feature selection procedure.
+
 \begin{figure}[htpb]
    \centering
+   \subfloat[AdaBoost]{
+      \includegraphics[width=0.3\linewidth]{figures/error_adaboost.pdf}
+      \label{fig:error:adaboost}
+   }
+   \quad
+   \subfloat[Elastic net]{
+      \includegraphics[width=0.3\linewidth]{figures/error_elastic_net.pdf}
+      \label{fig:error:elasticnet}
+   }
+   \quad
+   \subfloat[Gradient boost]{
+      \includegraphics[width=0.3\linewidth]{figures/error_gradient_boost.pdf}
+      \label{fig:error:gradientboost}
+   }
+   \\
+   \subfloat[Lasso]{
+      \includegraphics[width=0.3\linewidth]{figures/error_lasso.pdf}
+      \label{fig:error:lasso}
+   }
+   \quad
+   \subfloat[NNR]{
+      \includegraphics[width=0.3\linewidth]{figures/error_nnr.pdf}
+      \label{fig:error:nnr}
+   }
+   \quad
+   \subfloat[Random forest]{
+      \includegraphics[width=0.3\linewidth]{figures/error_random_forest.pdf}
+      \label{fig:error:randomforest}
+   }
+   \caption{Relative error of different estimators.}
+   \label{fig:error}
+\end{figure}
 
+\begin{figure}[htpb]
+   \centering
+   \subfloat[AdaBoost]{
+      \includegraphics[width=0.3\linewidth]{figures/std_adaboost.pdf}
+      \label{fig:std:adaboost}
+   }
+   \quad
+   \subfloat[Elastic net]{
+      \includegraphics[width=0.3\linewidth]{figures/std_elastic_net.pdf}
+      \label{fig:std:elasticnet}
+   }
+   \quad
+   \subfloat[Gradient boost]{
+      \includegraphics[width=0.3\linewidth]{figures/std_gradient_boost.pdf}
+      \label{fig:std:gradientboost}
+   }
+   \\
+   \subfloat[Lasso]{
+      \includegraphics[width=0.3\linewidth]{figures/std_lasso.pdf}
+      \label{fig:std:lasso}
+   }
+   \quad
+   \subfloat[NNR]{
+      \includegraphics[width=0.3\linewidth]{figures/std_nnr.pdf}
+      \label{fig:std:nnr}
+   }
+   \quad
+   \subfloat[Random forest]{
+      \includegraphics[width=0.3\linewidth]{figures/std_random_forest.pdf}
+      \label{fig:std:randomforest}
+   }
+   \caption{Standard derivation on average error of different estimators.}
+   \label{fig:std}
+\end{figure}
+
+To better illustrate the prediction accuracy, we overlay the histogram of
+baseline prediction with our estimators on one dataset in
+Figure~\ref{fig:hist}. The example dataset has 8 rates, each rate containing 16
+packets. Our estimation has relatively low errors, and the prediction errors
+has a much tighter distributions.
+
+\begin{figure}[htpb]
+   \centering
    \subfloat[AdaBoost]{
       \includegraphics[width=0.3\linewidth]{figures/histogram_adaboost.pdf}
    }
@@ -167,73 +290,6 @@ parameter settings we use for prediction:
    \subfloat[Random forest]{
       \includegraphics[width=0.3\linewidth]{figures/histogram_random_forest.pdf}
    }
-   \caption{Relative error histograms of different estimators. We ran learning
-      based estimators on FFT transformed smooth sequences. Example dataset has
-      range 50, rates 8, packets 16.}
-   \label{fig:name}
-\end{figure}
-
-\begin{figure}[htpb]
-   \centering
-   \subfloat[Relative error]{
-      \includegraphics[width=0.45\linewidth]{figures/error_exp4_range50_rates8_pkts16.pdf}
-   }
-   \quad
-   \subfloat[Standard derivation]{
-      \includegraphics[width=0.45\linewidth]{figures/std_exp4_range50_rates8_pkts16.pdf}
-   }
-   \caption{Dataset: range 50, rates 8, packets 16}
-   \label{fig:exp4}
-\end{figure}
-
-\begin{figure}[htpb]
-   \centering
-   \subfloat[Relative error]{
-      \includegraphics[width=0.45\linewidth]{figures/error_exp5_range50_rates2_pkts64.pdf}
-   }
-   \quad
-   \subfloat[Standard derivation]{
-      \includegraphics[width=0.45\linewidth]{figures/std_exp5_range50_rates2_pkts64.pdf}
-   }
-   \caption{Dataset: range 50, rates 2, packets 64}
-   \label{fig:exp5}
-\end{figure}
-
-\begin{figure}[htpb]
-   \centering
-   \subfloat[Relative error]{
-      \includegraphics[width=0.45\linewidth]{figures/error_exp6_range50_rates3_pkts43.pdf}
-   }
-   \quad
-   \subfloat[Standard derivation]{
-      \includegraphics[width=0.45\linewidth]{figures/std_exp6_range50_rates3_pkts43.pdf}
-   }
-   \caption{Dataset: range 50, rates 3, packets 43}
-   \label{fig:exp6}
-\end{figure}
-
-\begin{figure}[htpb]
-   \centering
-   \subfloat[Relative error]{
-      \includegraphics[width=0.45\linewidth]{figures/error_exp7_range50_rates6_pkts21.pdf}
-   }
-   \quad
-   \subfloat[Standard derivation]{
-      \includegraphics[width=0.45\linewidth]{figures/std_exp7_range50_rates6_pkts21.pdf}
-   }
-   \caption{Dataset: range 50, rates 6, packets 21}
-   \label{fig:exp7}
-\end{figure}
-
-\begin{figure}[htpb]
-   \centering
-   \subfloat[Relative error]{
-      \includegraphics[width=0.45\linewidth]{figures/error_Nov9_range50_rates4_pkts32.pdf}
-   }
-   \quad
-   \subfloat[Standard derivation]{
-      \includegraphics[width=0.45\linewidth]{figures/std_Nov9_range50_rates4_pkts32.pdf}
-   }
-   \caption{Dataset: range 50, rates 4, packets 32}
-   \label{fig:nov9}
+   \caption{Relative error histograms of different estimators.}
+   \label{fig:hist}
 \end{figure}

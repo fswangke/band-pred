@@ -1,10 +1,12 @@
 *.aux
+*.bak
 *.bbl
 *.blg
+*.dat
+*.gz
 *.log
+*.mat
 *.out
 *.pdf
 *.swp
-*.gz
-*.bak
-*.dat
+*.txt
