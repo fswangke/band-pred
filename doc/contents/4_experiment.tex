@@ -2,6 +2,36 @@
 \label{sec:experiment}
 \subsection{Feature Engineering}
 \label{sub:feature_engineering}
+\subsubsection{Sequence Smoothing}
+\label{ssub:sequence_smoothing}
+\begin{figure}[htpb]
+   \centering
+   \subfloat[Send gaps]{
+      \includegraphics[width=0.45\linewidth]{figures/smooth_send.pdf}
+   }
+   \quad
+   \subfloat[Received gaps]{
+      \includegraphics[width=0.45\linewidth]{figures/smooth_recv.pdf}
+   }
+   \caption{Smoothing raw packet gaps.}
+   \label{fig:smoothing}
+\end{figure}
+
+\subsubsection{Fourier Transformation}
+\label{ssub:fourier_transformation}
+
+\begin{figure}[htpb]
+   \centering
+   \subfloat[Send gaps]{
+      \includegraphics[width=0.45\linewidth]{figures/fft_send.pdf}
+   }
+   \quad
+   \subfloat[Received gaps]{
+      \includegraphics[width=0.45\linewidth]{figures/fft_recv.pdf}
+   }
+   \caption{Fourier transformation on raw packet gaps.}
+   \label{fig:fft}
+\end{figure}
 
 
 
@@ -26,6 +56,39 @@
 
 \subsection{Benchmark}
 \label{sub:benchmark}
+
+
+\begin{figure}[htpb]
+   \centering
+
+   \subfloat[AdaBoost]{
+      \includegraphics[width=0.3\linewidth]{figures/histogram_adaboost.pdf}
+   }
+   \quad
+   \subfloat[Elastic net]{
+      \includegraphics[width=0.3\linewidth]{figures/histogram_elastic_net.pdf}
+   }
+   \quad
+   \subfloat[Gradient boost]{
+      \includegraphics[width=0.3\linewidth]{figures/histogram_gradient_boost.pdf}
+   }
+   \\
+   \subfloat[Lasso]{
+      \includegraphics[width=0.3\linewidth]{figures/histogram_lasso.pdf}
+   }
+   \quad
+   \subfloat[NNR]{
+      \includegraphics[width=0.3\linewidth]{figures/histogram_nnr.pdf}
+   }
+   \quad
+   \subfloat[Random forest]{
+      \includegraphics[width=0.3\linewidth]{figures/histogram_random_forest.pdf}
+   }
+   \caption{Relative error histograms of different estimators. We ran learning
+      based estimators on FFT transformed smooth sequences. Example dataset has
+      range 50, rates 8, packets 16.}
+   \label{fig:name}
+\end{figure}
 
 \begin{figure}[htpb]
    \centering
