@@ -47,19 +47,43 @@ to train and optimize.
 \subsubsection{Fourier Transformation}
 \label{ssub:fourier_transformation}
 
+Noise in measurements, interrupt coalesces, cross traffic over the network, can
+make the received packet gaps to behave abnormally. In our experiments, we
+found that the location of the peaking locations can vary because of different
+reasons. If send and received gaps are concatenated as features, such
+misalignment can cause confusion over the actual physical meaning of different
+dimensions.
+
+We adopted Fourier transformation to convert the feature vector to the
+frequency domain to address the shifting issue. By converting the raw signal to
+frequency space, such temporal shift will be neglected, thus feature vectors
+can better capture the underlying models.
 
 \begin{figure}[htpb]
    \centering
    \subfloat[Send gaps]{
       \includegraphics[width=0.45\linewidth]{figures/fft_send.pdf}
+      \label{fig:fft:send}
    }
    \quad
    \subfloat[Received gaps]{
       \includegraphics[width=0.45\linewidth]{figures/fft_recv.pdf}
+      \label{fig:fft:recv}
    }
    \caption{Fourier transformation on raw packet gaps.}
    \label{fig:fft}
 \end{figure}
+
+We applied FFT on the raw and smooth signal in Figure~\ref{fig:smoothing} and
+plotted the real and imaginary parts of the FFT coefficients in
+Figure~\ref{fig:fft}. From Figure~\ref{fig:fft:recv} we can see that by
+applying FFT, we convert the striking raw pattern of the received gaps to a set
+of more discrete data points. Then by utilizing different learning algorithms,
+we can discover the underlying relationship between such frequency coefficients
+and the actual available network bandwidth. One thing worth noticing is that
+smoothed receiving gaps are more centralized, which makes learning and
+optimization easier. This agrees with our conclusion in
+Section~\ref{ssub:accuracy} that smoothing helps boosting accuracy.
 
 \subsection{Experimental Setting}
 \label{sub:parameter_setting}
