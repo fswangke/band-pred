@@ -1,11 +1,34 @@
 \section{Experiment}
 \label{sec:experiment}
+In this section, we describe our feature engineering in
+Section~\ref{sub:feature_engineering}, experimental setting in
+Section~\ref{sub:parameter_setting}, results and benchmarks in
+Section~\ref{sub:benchmark}.
 
 \subsection{Feature Engineering}
 \label{sub:feature_engineering}
+Good features are critical for machine learning based methods to work.
+Intuitively, good features have better and deeper understanding of properties
+of the optimization tasks. Basic pre-processing, like standardization, mean
+removal, variance scaling, are not sufficient for our task of predicting real
+world network bandwidth.
+
+Through experiment, we performed the following two feature engineering
+procedures to boost the regression accuracy: sequence smoothing, and Fourier
+transformation.
 
 \subsubsection{Sequence Smoothing}
 \label{ssub:sequence_smoothing}
+Noise is recognized as a potential issue for bandwidth estimation in practice,
+as in Figure~\ref{fig:smoothing}, noise together with interrupt coalescing
+can make the receiving signal very hard to convey effective information.
+Different smoothing strategies have been proposed to suppress the noise in
+probing results. We adopted \cite{Yin2014} as the smoothing method. We only
+used the first pass of the smoothed data for noise removal purposes.
+
+As can be seen in Figure~\ref{fig:smoothing:recv}, striking peaks have been
+removed from the smoothed receiving signal. Such regular data are a lot easier
+to train and optimize.
 
 \begin{figure}[htpb]
    \centering
@@ -23,6 +46,7 @@
 
 \subsubsection{Fourier Transformation}
 \label{ssub:fourier_transformation}
+
 
 \begin{figure}[htpb]
    \centering
@@ -54,11 +78,11 @@ Detailed statistics of datasets can be found in Table~\ref{tab:dataset}.
    \begin{tabular}{|c|c|c|c|c|l|l|l|l|}
       \hline
       Name & Range & \# Rate & \# Packets & Length & Total & Valid          & Training & Test\\ \hline
-      Exp4 & 50    & 8       & 16         & 128    & 11003 & 7475(67.94\%)  & 5233     & 2242 \\
-      Exp5 & 50    & 2       & 16         & 128    & 11003 & 7188(65.33\%)  & 5032     & 2156 \\
-      Exp6 & 50    & 3       & 16         & 129    & 10691 & 883(8.26\%)    & 618      & 265 \\
-      Exp7 & 50    & 6       & 16         & 126    & 11016 & 7203(65.39\%)  & 5042     & 2161 \\
-      Exp8 & 50    & 4       & 16         & 128    & 33310 & 18185(54.59\%) & 12730    & 5455  \\ \hline
+      Exp4 & 50\%  & 8       & 16         & 128    & 11003 & 7475(67.94\%)  & 5233     & 2242 \\
+      Exp5 & 50\%  & 2       & 16         & 128    & 11003 & 7188(65.33\%)  & 5032     & 2156 \\
+      Exp6 & 50\%  & 3       & 16         & 129    & 10691 & 883(8.26\%)    & 618      & 265 \\
+      Exp7 & 50\%  & 6       & 16         & 126    & 11016 & 7203(65.39\%)  & 5042     & 2161 \\
+      Exp8 & 50\%  & 4       & 16         & 128    & 33310 & 18185(54.59\%) & 12730    & 5455  \\ \hline
    \end{tabular}
 \end{table}
 
@@ -175,11 +199,11 @@ a larger parameter space, such method are more likely to underfit.
 We tried two different feature engineering methods over the raw stream data, as
 stated in Section~\ref{sub:feature_engineering}. From Figure~\ref{fig:error} we
 can see that both feature engineering approaches are effective. By applying FFT
-over raw sequences, we actually transformed the raw features into a temparal
+over raw sequences, we actually transformed the raw features into a temporal
 invariant representation. Intuitively, this is helpful because the shifting of
 peaks of raw signals(see Figure~\ref{fig:smoothing:recv} for an example) can
 lead to misalignment along different dimensions of the feature vectors we
-assembled. By converting the raw signal to frequency space, such temparal shift
+assembled. By converting the raw signal to frequency space, such temporal shift
 will be neglected, thus feature vectors can better capture the underlying
 models.
 
