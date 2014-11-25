@@ -1,10 +1,11 @@
 
 \begin{abstract}
-The abstract paragraph should be indented 1/2~inch (3~picas) on both left and
-right-hand margins. Use 10~point type, with a vertical spacing of 11~points.
-The word \textbf{Abstract} must be centered, bold, and in point size 12. Two
-line spaces precede the abstract. The abstract must be limited to one
-paragraph.\cite{Tibshirani1996,Yin2014}
+Although existing bandwidth estimation algorithms generally work well on normal 100Mbps networks, they do not adapt well to ultra-high speed networks.
+This is due to that finer inter-packet gaps are more vulnerable to buferring-related noises, where fine gaps are needed for high rate probing sequences.
+Recently,~\cite{Yin2014} has proposed a smoothing strategy, Buffering-aware Spike Smoothing (BASS), which helps significantly in scaling bandwidth estimation to ultra-high speed networks.
+Encouraged by our instincts on machine learning techniques, we formulate this bandwidth estimation problem as a regression problem between the sending/receiving gaps and true bandwidth.
+We proposed a full pipeline consisting of raw data preprocessing, feature engineering, model training and model evaluation.
+We have experimentally shown that our methods reduce the average error rate from 6.97\% to 1.82\% when comparing against the state-of-art~\cite{Yin2014} using the same dataset.
 \end{abstract}
 
 
