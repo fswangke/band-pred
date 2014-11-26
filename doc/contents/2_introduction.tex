@@ -1,1 +1,27 @@
 \section{Introduction}
+\label{sec:intro}
+% Why ultra-high speed bandwidth estimation
+Bandwidth estimation for ultra-high speed network has been actively studied during recent years, due to the coming availability next generation network such as Google fiber.
+% challenge
+While existing bandwidth estimation algorithms work well on 100Mbps networks, they do not scale well to gigabit and higher network speeds~\cite{???}.
+Bandwidth estimation on ultra-high speed network is challenging because smaller inter-packet gaps are needed for probing higher bandwidth, where such fine-scale gaps are more vulnerable against buffering related noise at the shared resources and at end hosts.
+
+% state-of-art method
+Recently,~\cite{Yin2014} has proposed a novel smoothing scheme, Buffering-aware Spike Smoothing (BASS), which helps significantly in scaling bandwidth estimation to ultra-high speed networks.
+By carefully observing the receiving gaps from the probing sequences, they first extract each buffering event by detecting spikes in the receiving signals.
+Then by smoothing each buffering event, they are able to recover the underlying pattern for bandwidth estimation.
+
+% machine learning perspectives
+Inspired by the success of~\cite{Yin2014} and recent advances on machine learning, we explored this problem from a different angle.
+Specifically, we formulate this problem as a regression problem between the sending/receiving gaps and the true available bandwidth.
+Machine learning is the process of discovering the underlying pattern between various input signals and a single or structured output.
+Normally, we call the task a classification problem when the output is discrete labels, and a regression problem if the output is continous value, where the bandwidth estimation is clearly a regression problem.
+Regression methods are powerful when plenty of observation are available for training and validating the model, which makes it ideal for bandwidth estimation task, since we could easily obtain thousands of measurements from the testbed.
+
+Our main contributions are summerized below:
+\begin{itemize}
+\item We propose a full modular pipeline for bandwidth estimating on ultra-high speed networks, consisting of data cleaning, feature engineering, model training and model evaluation
+\item We experimentally show that our methods can effectively reduce error rate to 1.82\% compared with 6.97\% from~\cite{Yin2014}. To the best of our knowledge, we are the first to demonstrate that regression could effectively solve the bandwidth estimation problem even for ultra-high speed networks.
+\end{itemize}
+
+In the rest of this paper, we give a quick review of several regression models in use in Section~\ref{sec:method} and feature engineering in Section~\ref{sub:feature_engineering} which is vital for handling noises in input signals. Our experimental findings are summarized and analyzed in Section~\ref{sec:experiment}. We conclude our work in Section~\ref{sec:conclusion} and discussed a few future directions in the hope to inspire more works to introduce machine learning techniques to this field in Section~\ref{sec:future_work}
