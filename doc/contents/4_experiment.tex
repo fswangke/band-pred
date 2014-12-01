@@ -67,7 +67,8 @@ can better capture the underlying models.
    \label{fig:fft}
 \end{figure}
 
-We applied FFT on the raw and smooth signal in Figure~\ref{fig:smoothing} and
+We applied Fast Fourier transformation (FFT)~\cite{frigo1998fftw} on the raw
+and smooth signal in Figure~\ref{fig:smoothing} and
 plotted the real and imaginary parts of the FFT coefficients in
 Figure~\ref{fig:fft}. From Figure~\ref{fig:fft:recv} we can see that by
 applying FFT, we convert the striking raw pattern of the received gaps to a set
@@ -108,9 +109,10 @@ Detailed statistics of datasets can be found in Table~\ref{tab:dataset}.
    \end{tabular}
 \end{table}
 
-In order to achieve better performance, we ran a 5 fold cross validation on the
+In order to achieve better performance, we ran a 5 fold cross
+validation~\cite{murphy2012machine}, on the
 training dataset to tune parameters of different estimators. Here are the
-parameter settings we use for prediction:
+parameter settings we use for training:
 \begin{itemize}
    \item AdaBoost: we used 200 decision tree regressor as base estimators. With
       learning rate of 1.0, and linear loss function, we achieved an error rate
@@ -162,7 +164,7 @@ Table~\ref{tab:timing}.
 
 \begin{table}[htpb]
    \centering
-   \caption{Average processing time over 28655 streams.}
+   \caption{Average pre-processing and training time over 28655 training streams.}
    \label{tab:timing}
    \begin{tabular}{|c|r|r|r|r|r|r|}
       \hline
