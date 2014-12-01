@@ -1,7 +1,7 @@
 \section{Regression Models}
 \label{sec:method}
 As introduced before, regression~\cite{hastie2009elements} is the process to reveal the relationship between input vector and output value.
-Mathmatically, we denote the input vector as $X = (x_1, x_2, \ldots, x_p)$, and the real-value output $Y$.
+Mathematically, we denote the input vector as $X = (x_1, x_2, \ldots, x_p)$, and the real-value output $Y$.
 Therefore, regression is the process to seek the best function $f(x)$ such that $Y = f(X)$.
 Generally, we first make a reasonable hypothesis of the underlying $f(x)$ through observation of $X$ and corresponding $Y$.
 With abundant observations $X$ and ground truth value $Y$, we then could estimate the hypothesis $f(x)$ by automatically tuning the parameters to minimize the difference between $f(X)$ and $Y$.
@@ -9,7 +9,7 @@ This is defined as supervised learning in machine learning literature, since we 
 And the training process is essentially to estimate the best parameters of $f(x)$.
 
 In the following sessions, we give brief introduction to regression models that have been used in our system.
-Due to the limitation of pages, we provide detailed references for curious readers to deeply understand the mathmatical meanings behind each model.
+Due to the limitation of pages, we provide detailed references for curious readers to deeply understand the mathematical meanings behind each model.
 
 \subsection{Linear models}
 \label{sub:linear_models}
@@ -30,10 +30,10 @@ We use the notation in Section~\ref{equ:linear} through all the rest of the text
 
 \subsubsection{Lasso}
 \label{ssub:lasso}
-LASSO~\cite{Tibshirani1996}, Least Absolute Shrinkage and Selection Operator, is a linear model that estimates sparse coefficients, which results from the additional $l_1$ contraint on coefficients.
+LASSO~\cite{Tibshirani1996}, Least Absolute Shrinkage and Selection Operator, is a linear model that estimates sparse coefficients, which results from the additional $l_1$ constraint on coefficients.
 It is useful in certain context due to its tendency to prefer solutions with fewer parameter values, effectively reducing the number of variables upon which the given solution is dependent.
 
-Mathmatically, it consists of least square residual error with $l_1$ prior as regularizer.
+Mathematically, it consists of least square residual error with $l_1$ prior as regularizer.
 The objective function to minimize is:
 \begin{equation}
   \min_w\frac{1}{2N}\|Xw - y\|^2_2 + \alpha\|w\|_1
@@ -42,8 +42,8 @@ where $N$ is the number of samples, and $\alpha$ is a constant to balance the we
 
 \subsubsection{Elastic net}
 \label{ssub:elastic_net}
-In addition to $l_1$ regularization on coefficients $w$ like in LASSO(Section~\ref{ssub:lasso}), the elatic net~\cite{zou2005} method imposes $l_2$ regularization as well.
-The mathmatical formulation is shown below:
+In addition to $l_1$ regularization on coefficients $w$ like in LASSO(Section~\ref{ssub:lasso}), the elastic net~\cite{zou2005} method imposes $l_2$ regularization as well.
+The mathematical formulation is shown below:
 \begin{equation}
   \min_w\frac{1}{2N}\|Xw - y\|^2_2 + \alpha\rho\|w\|_1 + \frac{1}{2}\alpha(1-\rho)\|w\|^2_2
 \end{equation}
@@ -55,7 +55,7 @@ The elastic net, conversely, will tend to use all these features, which is desir
 
 \subsection{Ensemble methods}
 \label{sub:ensemble_methods}
-Ensemble methods are to combine the predictions of several base estimators built with a given learning algorithm in order to improve generalizability / robustness over a single estimator.
+Ensemble methods are to combine the predictions of several base estimators built with a given learning algorithm in order to improve generalization ability/ robustness over a single estimator.
 There are two distinguishable families of ensemble methods:
 \begin{itemize}
 	\item \textbf{Average methods}: the driving principle is to build several estimators independently and then to average their predictions. On average, the combined estimator is usually better than any of the single base estimator because its variance is reduced. Random forest in Section~\ref{ssub:random_forests} belongs to this category.
@@ -84,7 +84,7 @@ Tree size is a tuning parameter governing the model's complexity, and the optima
 \label{ssub:random_forests}
 A random forest~\cite{breiman2001random} is a meta estimator that fits a number of regression trees on various sub-samples of the dataset and use averaging to improve the predictive accuracy and control over fit.
 The randomness comes from the process of generating a collection of regression trees, where each tree is trained on a randomly selected subset of training data and a randomly subset of input variables.
-Although each individual regression tree may suffer from bias and overfitting, the randomness ensure that the entire forest could capture the entire varaince of the feature distribution.
+Although each individual regression tree may suffer from bias and overfitting, the randomness ensure that the entire forest could capture the entire variance of the feature distribution.
 Another advantage of random forests is that it runs efficiently on large data bases, since the algorithm is highly parallelable.
 
 \subsubsection{AdaBoost}
@@ -98,7 +98,7 @@ The core principle of AdaBoost is to fit a sequence of weak learners (i.e., mode
 The predictions from all of them are then combined through a weighted majority vote (or sum) to produce the final prediction. 
 The data modifications at each so-called boosting iteration consist of applying weights $w_1, w_2, \ldots w_N$ to each of the training samples. 
 Initially, those weights are all set to $w_i = \frac{1}{N}$, so that the first step simply trains a weak learner on the original data. 
-For each successive iteration, the sample weights are individually modified and the learning algorithm is reapplied to the reweighted data. 
+For each successive iteration, the sample weights are individually modified and the learning algorithm is reapplied to the re-weighted data. 
 At a given step, those training examples that were incorrectly predicted by the boosted model induced at the previous step have their weights increased, whereas the weights are decreased for those that were predicted correctly. 
 As iterations proceed, examples that are difficult to predict receive ever-increasing influence. 
 Each subsequent weak learner is thereby forced to concentrate on the examples that are missed by the previous ones in the sequence
@@ -116,10 +116,10 @@ Gradient tree boosting uses regression trees of fixed sizes as weak learners.
 
 \subsection{Nearest Neighbors Regression}
 \label{sub:nearest_neighbor}
-Except all of the supervised learning approaches we have introduced above, nearest neighbors regression~\cite{hardle1990} is a intuitive but powerful data-driven approach that works well when abundent training data is availalbe.
+Except all of the supervised learning approaches we have introduced above, nearest neighbors regression~\cite{hardle1990} is a intuitive but powerful data-driven approach that works well when abundant training data is available.
 Essentially, given input vector $X$, we find $k$ nearest vectors from the training set, which are defined as top $k$ vectors with smallest $l_2$ distance to input vector $X$.
 Then the predicted value is interpolated from the $k$ nearest neighbor's ground truth value. 
-The mathmatical formulation is given below:
+The mathematical formulation is given below:
 \begin{equation}
 	\hat{Y} = \frac{1}{k} \sum \limits_{x_i \in N_k(x)} y_i
 \end{equation}

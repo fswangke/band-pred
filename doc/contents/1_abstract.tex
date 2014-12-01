@@ -1,11 +1,18 @@
-
 \begin{abstract}
-Although existing bandwidth estimation algorithms generally work well on normal 100Mbps networks, they do not adapt well to ultra-high speed networks.
-This is due to that finer inter-packet gaps are more vulnerable to buferring-related noises, where fine gaps are needed for high rate probing sequences.
-Recently,~\cite{Yin2014} has proposed a smoothing strategy, Buffering-aware Spike Smoothing (BASS), which helps significantly in scaling bandwidth estimation to ultra-high speed networks.
-Encouraged by our instincts on machine learning techniques, we formulate this bandwidth estimation problem as a regression problem between the sending/receiving gaps and true bandwidth.
-We proposed a full pipeline consisting of raw data preprocessing, feature engineering, model training and model evaluation.
-We have experimentally shown that our methods reduce the average error rate from 6.97\% to 1.82\% when comparing against the state-of-art~\cite{Yin2014} using the same dataset.
+Although existing bandwidth estimation algorithms generally work well on normal
+100~Mbps networks, they do not adapt well to ultra-high speed networks. This is
+due to that finer inter-packet gaps are more vulnerable to buffering-related
+noises, where fine gaps are needed for high rate probing sequences.
+Recently,~\cite{Yin2014} has proposed a smoothing strategy, Buffering-aware
+Spike Smoothing (BASS), which helps significantly in scaling bandwidth
+estimation to ultra-high speed networks. Encouraged by our instincts on machine
+learning techniques, we formulate this bandwidth estimation problem as a
+regression problem, which predicts the available bandwidth based on probing
+stream statistics. For this project, we proposed and implemented a full
+pipeline consisting stages of raw data preprocessing, feature engineering,
+model training and model evaluation. Preliminary experimental results showed an
+average error rate reduce from 6.97\% to 1.82\% compared to the
+state-of-art~\cite{Yin2014}.
 \end{abstract}
 
 
