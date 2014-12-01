@@ -1,6 +1,6 @@
 \section{Regression Models}
 \label{sec:method}
-As introduced before, regression is the process to reveal the relationship between input vector and output value.
+As introduced before, regression~\cite{hastie2009elements} is the process to reveal the relationship between input vector and output value.
 Mathmatically, we denote the input vector as $X = (x_1, x_2, \ldots, x_p)$, and the real-value output $Y$.
 Therefore, regression is the process to seek the best function $f(x)$ such that $Y = f(X)$.
 Generally, we first make a reasonable hypothesis of the underlying $f(x)$ through observation of $X$ and corresponding $Y$.
@@ -13,7 +13,7 @@ Due to the limitation of pages, we provide detailed references for curious reade
 
 \subsection{Linear models}
 \label{sub:linear_models}
-As indicated from the name, linear models assume a linear relationship between input vector $X$ and real-value output $Y$ as follows:
+As indicated from the name, linear models assume a linear relationship between input vector $X$ and real-value output $Y$ as follows~\cite{hastie2009elements}:
 \begin{equation}
 	Y = w_0 + \sum\limits_{i=1}^p w_i{x_i}
 \end{equation}
@@ -26,11 +26,11 @@ where $w_i$ are coefficients and $w_0$ is the intercept. For simplicity reasons,
 		w &= {(w_0, w_1, w_2, \ldots, w_p)}^T
 	\end{aligned}
 \end{equation}
-We use the notation in~\ref{equ:linear} through all the rest of the text.
+We use the notation in Section~\ref{equ:linear} through all the rest of the text.
 
 \subsubsection{Lasso}
 \label{ssub:lasso}
-LASSO, Least Absolute Shrinkage and Selection Operator, is a linear model that estimates sparse coefficients, which results from the additional $l_1$ contraint on coefficients.
+LASSO~\cite{Tibshirani1996}, Least Absolute Shrinkage and Selection Operator, is a linear model that estimates sparse coefficients, which results from the additional $l_1$ contraint on coefficients.
 It is useful in certain context due to its tendency to prefer solutions with fewer parameter values, effectively reducing the number of variables upon which the given solution is dependent.
 
 Mathmatically, it consists of least square residual error with $l_1$ prior as regularizer.
@@ -42,7 +42,7 @@ where $N$ is the number of samples, and $\alpha$ is a constant to balance the we
 
 \subsubsection{Elastic net}
 \label{ssub:elastic_net}
-In addition to $l_1$ regularization on coefficients $w$ like in LASSO~\ref{ssub:lasso}, the elatic net method imposes $l_2$ regularization as well.
+In addition to $l_1$ regularization on coefficients $w$ like in LASSO(Section~\ref{ssub:lasso}), the elatic net~\cite{zou2005} method imposes $l_2$ regularization as well.
 The mathmatical formulation is shown below:
 \begin{equation}
   \min_w\frac{1}{2N}\|Xw - y\|^2_2 + \alpha\rho\|w\|_1 + \frac{1}{2}\alpha(1-\rho)\|w\|^2_2
@@ -64,7 +64,7 @@ There are two distinguishable families of ensemble methods:
 
 \subsection{Regression Trees}
 \label{ssub:regression_tree}
-We first give a brief introduction to regression trees, which form the basis for the entire ensemble methods.
+We first give a brief introduction to regression trees~\cite{hastie2009elements}, which form the basis for the entire ensemble methods.
 Similar to decision trees, regression trees partition the feature space into a set of rectangles and then fit a simple model (like a constant) in each one.
 Unlike decision trees which output is a discrete label, regression trees are used to predict real-value output.
 Suppose a general regression tree has a partition into $M$ regions $R_1, R_2, \ldots, R_M$, and we model the response as a constant $c_m$ in each region:
@@ -82,14 +82,14 @@ Tree size is a tuning parameter governing the model's complexity, and the optima
 
 \subsubsection{Random Forests}
 \label{ssub:random_forests}
-A random forest is a meta estimator that fits a number of regression trees on various sub-samples of the dataset and use averaging to improve the predictive accuracy and control over fit.
+A random forest~\cite{breiman2001random} is a meta estimator that fits a number of regression trees on various sub-samples of the dataset and use averaging to improve the predictive accuracy and control over fit.
 The randomness comes from the process of generating a collection of regression trees, where each tree is trained on a randomly selected subset of training data and a randomly subset of input variables.
 Although each individual regression tree may suffer from bias and overfitting, the randomness ensure that the entire forest could capture the entire varaince of the feature distribution.
 Another advantage of random forests is that it runs efficiently on large data bases, since the algorithm is highly parallelable.
 
 \subsubsection{AdaBoost}
 \label{ssub:adaboost}
-AdaBoost is short for Adaptive Boosting.
+AdaBoost~\cite{collins2002} is short for Adaptive Boosting.
 %, is a meta-estimator that begins by fitting a regressor on original dataset and then fits additional copies of the regressor on the same dataset but where the weights of instances are adjusted according to the error of the current prediciton.
 %As such, subsequent regressors focus more on difficult cases.
 %AdaBoost is adaptive in the sense that subsequent weak learners are tweaked in favor of those instance misclassified by previous classifiers.
@@ -105,7 +105,7 @@ Each subsequent weak learner is thereby forced to concentrate on the examples th
 
 \subsubsection{Gradient Boosted Regression Trees}
 \label{ssub:gradient_boost}
-Gradient boosted regression trees (GBRT) is a generalization of boosting to arbitrary differentiable loss functions.
+Gradient boosted regression trees (GBRT)~\cite{friedman2001} is a generalization of boosting to arbitrary differentiable loss functions.
 GBRT has natural handling of data of mixed type and is robust to outliers in output space via robust loss functions.
 GBRT considers additive models of the following form:
 \begin{equation}
@@ -116,7 +116,7 @@ Gradient tree boosting uses regression trees of fixed sizes as weak learners.
 
 \subsection{Nearest Neighbors Regression}
 \label{sub:nearest_neighbor}
-Except all of the supervised learning approaches we have introduced above, nearest neighbors regression is a intuitive but powerful data-driven approach that works well when abundent training data is availalbe.
+Except all of the supervised learning approaches we have introduced above, nearest neighbors regression~\cite{hardle1990} is a intuitive but powerful data-driven approach that works well when abundent training data is availalbe.
 Essentially, given input vector $X$, we find $k$ nearest vectors from the training set, which are defined as top $k$ vectors with smallest $l_2$ distance to input vector $X$.
 Then the predicted value is interpolated from the $k$ nearest neighbor's ground truth value. 
 The mathmatical formulation is given below:
