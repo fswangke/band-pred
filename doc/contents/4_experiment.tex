@@ -1,12 +1,5 @@
-\section{Experiment}
-\label{sec:experiment}
-In this section, we describe our feature engineering in
-Section~\ref{sub:feature_engineering}, experimental setting in
-Section~\ref{sub:parameter_setting}, results and benchmarks in
-Section~\ref{sub:benchmark}.
-
-\subsection{Feature Engineering}
-\label{sub:feature_engineering}
+\section{Feature Engineering}
+\label{sec:feature_engineering}
 Good features are critical for machine learning based methods to work.
 Intuitively, good features have better and deeper understanding of properties
 of the optimization tasks. Basic pre-processing, like standardization, mean
@@ -17,8 +10,8 @@ Through experiment, we performed the following two feature engineering
 procedures to boost the regression accuracy: sequence smoothing, and Fourier
 transformation.
 
-\subsubsection{Sequence Smoothing}
-\label{ssub:sequence_smoothing}
+\subsection{Sequence Smoothing}
+\label{sub:sequence_smoothing}
 Noise is recognized as a potential issue for bandwidth estimation in practice,
 as in Figure~\ref{fig:smoothing}, noise together with interrupt coalescing
 can make the receiving signal very hard to convey effective information.
@@ -44,8 +37,8 @@ to train and optimize.
    \label{fig:smoothing}
 \end{figure}
 
-\subsubsection{Fourier Transformation}
-\label{ssub:fourier_transformation}
+\subsection{Fourier Transformation}
+\label{sub:fourier_transformation}
 
 Noise in measurements, interrupt coalesces, cross traffic over the network, can
 make the received packet gaps to behave abnormally. In our experiments, we
@@ -85,6 +78,11 @@ smoothed receiving gaps are more centralized, which makes learning and
 optimization easier. This agrees with our conclusion in
 Section~\ref{ssub:accuracy} that smoothing helps boosting accuracy.
 
+\section{Experiment}
+\label{sec:experiment}
+In this section, we describe our  experimental setting in
+Section~\ref{sub:parameter_setting}, results and benchmarks in
+Section~\ref{sub:benchmark}.
 \subsection{Experimental Setting}
 \label{sub:parameter_setting}
 In order to test the generalization and robustness of the estimators, we
